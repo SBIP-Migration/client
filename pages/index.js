@@ -22,8 +22,8 @@ const buttonStyles = {
 
 // Only one RPC endpoint required per chain
 const rpcAPIKey = '<INFURA_KEY>' || '<ALCHEMY_KEY>'
-const rpcUrl = 'https://eth-mainnet.g.alchemy.com/v2/Gjb540W1rqkoMT-HMy7MznjDO1t4Athm'//`https://eth-mainnet.g.alchemy.com/v2/${rpcAPIKey}` || `https://mainnet.infura.io/v3/${rpcAPIKey}`
-
+const rpcUrl = process.env.RPCURL
+console.log("rpcUrl",rpcUrl)
 // initialize Onboard
 init({
   wallets: [injected],
