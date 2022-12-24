@@ -5,6 +5,8 @@ import { ethers } from 'ethers'
 
 import injectedModule from '@web3-onboard/injected-wallets'
 
+import Positions from './positions'
+
 const injected = injectedModule()
 
 const buttonStyles = {
@@ -22,7 +24,7 @@ const buttonStyles = {
 
 // Only one RPC endpoint required per chain
 const rpcAPIKey = '<INFURA_KEY>' || '<ALCHEMY_KEY>'
-const rpcUrl = process.env.RPCURL
+const rpcUrl = "https://eth-mainnet.g.alchemy.com/v2/Gjb540W1rqkoMT-HMy7MznjDO1t4Athm"//process.env.RPCURL
 console.log("rpcUrl",rpcUrl)
 // initialize Onboard
 init({
@@ -74,6 +76,8 @@ export default function Home() {
         >
           {connecting ? 'Connecting' : wallet ? 'Disconnect' : 'Connect'}
         </button>
+
+        <Positions/>
       </main>
     </div>
   )
