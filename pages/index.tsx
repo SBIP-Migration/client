@@ -6,7 +6,9 @@ import { ethers } from 'ethers'
 import injectedModule from '@web3-onboard/injected-wallets'
 
 import Positions from './positions'
+import Link from "next/link";
 
+import Apollo from './api/apollo'
 const injected = injectedModule()
 
 const buttonStyles = {
@@ -39,6 +41,8 @@ init({
   ]
 })
 
+
+
 export default function Home() {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
 
@@ -47,10 +51,16 @@ export default function Home() {
 
   if (wallet) {
     ethersProvider = new ethers.providers.Web3Provider(wallet.provider, 'any')
+    // console.log("wallet",wallet)
   }
 
   return (
     <div className={styles.container}>
+      <Link href="/gotoapp">
+        <button className="btn btn-danger border-0 history-btn px-4 py-3 ms-auto">
+          Go To App
+        </button>
+      </Link>
       <Head>
         <title>Web3-Onboard Demo</title>
         <meta
@@ -76,8 +86,15 @@ export default function Home() {
         >
           {connecting ? 'Connecting' : wallet ? 'Disconnect' : 'Connect'}
         </button>
-
-        <Positions/>
+        {wallet &&
+                <div >
+                  Im here
+                  {wallet.accounts[0].address}
+                  <Positions addr={wallet.accounts[0].address}/>
+                </div>
+            }
+            
+            <Apollo/>
       </main>
     </div>
   )
