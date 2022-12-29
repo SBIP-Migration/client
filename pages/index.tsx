@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { init, useConnectWallet } from '@web3-onboard/react'
@@ -9,6 +10,7 @@ import Positions from './positions'
 import Link from "next/link";
 
 import Apollo from './api/apollo'
+import Getbalances from './components/getbalances'
 const injected = injectedModule()
 
 const buttonStyles = {
@@ -45,12 +47,16 @@ init({
 
 export default function Home() {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
+  const [provider, setProvider] = useState()
 
   // create an ethers provider
   let ethersProvider
 
   if (wallet) {
     ethersProvider = new ethers.providers.Web3Provider(wallet.provider, 'any')
+    setProvider(ethersProvider)
+    
+    console.log("ethersProvider",ethersProvider)
     // console.log("wallet",wallet)
   }
 
@@ -93,6 +99,8 @@ export default function Home() {
                   <Positions addr={wallet.accounts[0].address}/>
                 </div>
             }
+        get balances here
+        <Getbalances provider={provider}/>
             
             <Apollo/>
       </main>
