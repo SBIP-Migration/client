@@ -26,7 +26,7 @@ const buttonStyles = {
 
 // Only one RPC endpoint required per chain
 const rpcAPIKey = '<INFURA_KEY>' || '<ALCHEMY_KEY>'
-const rpcUrl = "https://eth-mainnet.g.alchemy.com/v2/Gjb540W1rqkoMT-HMy7MznjDO1t4Athm"//process.env.RPCURL
+const rpcUrl = process.env.GOERLI_URL
 console.log("rpcUrl",rpcUrl)
 // initialize Onboard
 init({
@@ -35,7 +35,7 @@ init({
     {
       id: '0x1',
       token: 'ETH',
-      label: 'Ethereum Mainnet',
+      label: 'Ethereum GOERLI',
       rpcUrl
     }
   ]
