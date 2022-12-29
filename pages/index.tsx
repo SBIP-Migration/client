@@ -26,16 +26,16 @@ const buttonStyles = {
 
 // Only one RPC endpoint required per chain
 const rpcAPIKey = '<INFURA_KEY>' || '<ALCHEMY_KEY>'
-const rpcUrl = process.env.GOERLI_URL
+const rpcUrl = process.env.NEXT_PUBLIC_GOERLI_URL
 console.log("rpcUrl",rpcUrl)
 // initialize Onboard
 init({
   wallets: [injected],
   chains: [
     {
-      id: '0x1',
+      id: '0x5',//'0x1',0x5 ****
       token: 'ETH',
-      label: 'Ethereum GOERLI',
+      label: 'Goerli Testnet',
       rpcUrl
     }
   ]
