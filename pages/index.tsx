@@ -104,7 +104,7 @@ export default function Home() {
             <div >
               Im here
               {wallet.accounts[0].address}
-              <Positions addr={wallet.accounts[0].address} />
+              {/* <Positions addr={wallet.accounts[0].address} /> */}
 
               get balances here
 
