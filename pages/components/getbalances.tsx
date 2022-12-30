@@ -50,10 +50,18 @@ function Getbalances(props) {
                 console.log(`tokenContract${i}`,tokenContract)
                 const tokenBalanceCall = tokenContract.balanceOf(address1);
                 console.log(`tokenBalanceCall${i}`,tokenBalanceCall)
+
+                const format = parseInt(tokenBalanceCall)// 29803630.997051883414242659
+
+                console.log(`format${i}`,format)
+
                 callList.push(tokenBalanceCall);
                 console.log("calllist", callList)
             }
-
+            // if (ethcallProvider._provider) {
+            //     const aTokenBalancesHex1 = await imported.provider(callList[0]);
+            //     console.log("aTokenBalancesHex1",aTokenBalancesHex1)
+            // }    
             // if (ethcallProvider._provider) {
             //     console.log("ethcallProvider", ethcallProvider)
             //     // const aTokenBalancesHex = await ethcallProvider.all(callList);
