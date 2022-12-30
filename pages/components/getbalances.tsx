@@ -1,10 +1,15 @@
 import { ethers } from "ethers";
-import {useEffect, useState } from "react";
+import {useEffect, useState, useContext} from "react";
 import { Contract, Provider } from 'ethers-multicall';
+import {TOKEN_LIST} from "../Tokenlist"
+import { UserContext } from '../index';
 
 function Getbalances(props) {
   const [aTokenBalances, setATokenBalances] = useState([{}]);
+  const address_Imported = useContext(UserContext);
+  console.log("address_Imported",address_Imported)
   console.log("props.provider", props.provider)  
+  console.log("TOKEN_LIST", TOKEN_LIST)  
   
   async function getATokenBalances(address1) {
     const ethcallProvider = new Provider(props.provider, 42);
@@ -22,6 +27,7 @@ function Getbalances(props) {
       const tokenBalanceCall = tokenContract.balanceOf(address1);
       callList.push(tokenBalanceCall);
     }
+    console.log("ethcallProvider",ethcallProvider)
     const aTokenBalancesHex = await ethcallProvider.all(callList);
 
     const aTokenBalancesList = [];
@@ -47,6 +53,7 @@ function Getbalances(props) {
     }
     console.log('aTokenBalances: ', aTokenBalancesList);
     setATokenBalances(aTokenBalancesList);
+    // console.log()
   }
 
 
@@ -56,8 +63,13 @@ function Getbalances(props) {
     // await getVariableDebtBalances(address1);
   }
 
+//   useEffect(() => {
+//     getAllBalances(props.address)
+//   },[props.address, aTokenBalances ])//stableDebtBalances, variableDebtBalances, current]);
+
   return (
     <>
+    {/* {aTokenBalances} */}
     </>
 )
 }

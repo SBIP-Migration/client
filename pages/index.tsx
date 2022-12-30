@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState, createContext, useContext } from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { init, useConnectWallet } from '@web3-onboard/react'
@@ -11,6 +11,8 @@ import Link from "next/link";
 
 import Apollo from './api/apollo'
 import Getbalances from './components/getbalances'
+export const UserContext = createContext({});
+
 const injected = injectedModule()
 
 const buttonStyles = {
@@ -44,23 +46,29 @@ init({
 })
 
 
-
+//export default 
 export default function Home() {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
   const [provider, setProvider] = useState()
+  const [walletSigner, setWalletsigner] = useState({})
 
   // create an ethers provider
   let ethersProvider
 
-  if (wallet) {
-    ethersProvider = new ethers.providers.Web3Provider(wallet.provider, 'any')
-    setProvider(ethersProvider)
-    
-    console.log("ethersProvider",ethersProvider)
-    // console.log("wallet",wallet)
-  }
+  useEffect(() => {
+
+    if (wallet) {
+      ethersProvider = new ethers.providers.Web3Provider(wallet.provider, 'any')
+      setProvider(ethersProvider)
+      console.log("wallet.accounts[0].address",wallet.accounts[0].address)
+      setWalletsigner(wallet.accounts[0].address)
+    }
+
+  },[wallet]);
+
 
   return (
+    <UserContext.Provider value={walletSigner}>
     <div className={styles.container}>
       <Link href="/gotoapp">
         <button className="btn btn-danger border-0 history-btn px-4 py-3 ms-auto">
@@ -100,10 +108,11 @@ export default function Home() {
                 </div>
             }
         get balances here
-        <Getbalances provider={provider}/>
+        <Getbalances provider={provider} address={walletSigner}/>
             
             <Apollo/>
       </main>
     </div>
+    </UserContext.Provider>
   )
 }
