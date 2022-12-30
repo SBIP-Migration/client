@@ -11,7 +11,7 @@ import Link from "next/link";
 
 import Apollo from './api/apollo'
 import Getbalances from './components/getbalances'
-export const UserContext = createContext({});
+export const UserContext = createContext();
 
 const injected = injectedModule()
 
@@ -31,7 +31,7 @@ const buttonStyles = {
 // Only one RPC endpoint required per chain
 const rpcAPIKey = '<INFURA_KEY>' || '<ALCHEMY_KEY>'
 const rpcUrl = process.env.NEXT_PUBLIC_GOERLI_URL
-console.log("rpcUrl",rpcUrl)
+console.log("rpcUrl", rpcUrl)
 // initialize Onboard
 init({
   wallets: [injected],
@@ -60,59 +60,63 @@ export default function Home() {
     if (wallet) {
       ethersProvider = new ethers.providers.Web3Provider(wallet.provider, 'any')
       setProvider(ethersProvider)
-      console.log("wallet.accounts[0].address",wallet.accounts[0].address)
+      console.log("wallet.accounts[0].address", wallet.accounts[0].address)
       setWalletsigner(wallet.accounts[0].address)
     }
 
-  },[wallet]);
+  }, [wallet]);
 
 
   return (
-    <UserContext.Provider value={walletSigner}>
-    <div className={styles.container}>
-      <Link href="/gotoapp">
-        <button className="btn btn-danger border-0 history-btn px-4 py-3 ms-auto">
-          Go To App
-        </button>
-      </Link>
-      <Head>
-        <title>Web3-Onboard Demo</title>
-        <meta
-          name="description"
-          content="Example of how to integrate Web3-Onboard with Next.js"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <UserContext.Provider value={{walletSigner:walletSigner, provider:provider }}>
+      <div className={styles.container}>
+        <Link href="/gotoapp">
+          <button className="btn btn-danger border-0 history-btn px-4 py-3 ms-auto">
+            Go To App
+          </button>
+        </Link>
+        <Head>
+          <title>Web3-Onboard Demo</title>
+          <meta
+            name="description"
+            content="Example of how to integrate Web3-Onboard with Next.js"
+          />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to this demo of
-          <a href="https://onboard.blocknative.com">
-            {' '}
-            Web3-Onboard
-          </a>
-          !
-        </h1>
-        <button
-          style={buttonStyles}
-          disabled={connecting}
-          onClick={() => (wallet ? disconnect(wallet) : connect())}
-        >
-          {connecting ? 'Connecting' : wallet ? 'Disconnect' : 'Connect'}
-        </button>
-        {wallet &&
-                <div >
-                  Im here
-                  {wallet.accounts[0].address}
-                  <Positions addr={wallet.accounts[0].address}/>
-                </div>
-            }
-        get balances here
-        <Getbalances provider={provider} address={walletSigner}/>
-            
-            <Apollo/>
-      </main>
-    </div>
+        <main className={styles.main}>
+          <h1 className={styles.title}>
+            Welcome to this demo of
+            <a href="https://onboard.blocknative.com">
+              {' '}
+              Web3-Onboard
+            </a>
+            !
+          </h1>
+          <button
+            style={buttonStyles}
+            disabled={connecting}
+            onClick={() => (wallet ? disconnect(wallet) : connect())}
+          >
+            {connecting ? 'Connecting' : wallet ? 'Disconnect' : 'Connect'}
+          </button>
+          {wallet &&
+            <div >
+              Im here
+              {wallet.accounts[0].address}
+              <Positions addr={wallet.accounts[0].address} />
+
+              get balances here
+
+              <Getbalances provider={provider} address={walletSigner} />
+            </div>
+
+          }
+
+
+          <Apollo />
+        </main>
+      </div>
     </UserContext.Provider>
   )
 }
