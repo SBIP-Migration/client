@@ -1,8 +1,8 @@
 import { useEffect, useState, createContext, useContext } from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import { init, useConnectWallet } from '@web3-onboard/react'
-import { ethers } from 'ethers'
+import { init, useConnectWallet, useAppState } from '@web3-onboard/react'
+import { ethers, getDefaultProvider } from 'ethers'
 
 import injectedModule from '@web3-onboard/injected-wallets'
 
@@ -10,8 +10,8 @@ import Positions from './positions'
 import Link from "next/link";
 
 import Apollo from './api/apollo'
-import Getbalances from './components/getbalances'
-export const UserContext = createContext();
+import Balances from './components/Balances'
+import { Button, Flex, Heading, Text, VStack } from '@chakra-ui/react'
 
 const injected = injectedModule()
 
@@ -49,25 +49,10 @@ init({
 //export default 
 export default function Home() {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
-  const [provider, setProvider] = useState()
-  const [walletSigner, setWalletsigner] = useState({})
-
-  // create an ethers provider
-  let ethersProvider
-
-  useEffect(() => {
-
-    if (wallet) {
-      ethersProvider = new ethers.providers.Web3Provider(wallet.provider, 'any')
-      setProvider(ethersProvider)
-      setWalletsigner(wallet.accounts[0].address)
-    }
-
-  }, [wallet]);
-
+  const walletAddress = wallet?.accounts?.[0].address
 
   return (
-    <UserContext.Provider value={{walletSigner:walletSigner, provider:provider }}>
+    <Flex flexDir="column">
       <div className={styles.container}>
         <Link href="/gotoapp">
           <button className="btn btn-danger border-0 history-btn px-4 py-3 ms-auto">
@@ -84,41 +69,27 @@ export default function Home() {
         </Head>
 
         <main className={styles.main}>
-          <h1 className={styles.title}>
-            Welcome to this demo of
-            <a href="https://onboard.blocknative.com">
-              {' '}
-              Web3-Onboard
-            </a>
-            !
-          </h1>
-          <button
+          <Heading as="h1" size="lg">
+            OmniTransfer - Transfer all your tokens & positions in one click
+          </Heading>
+          <Button
             style={buttonStyles}
             disabled={connecting}
             onClick={() => (wallet ? disconnect(wallet) : connect())}
           >
             {connecting ? 'Connecting' : wallet ? 'Disconnect' : 'Connect'}
-          </button>
+          </Button>
           {wallet &&
-            <div >
-
-              <tr>
-              <td> Address connected :</td>
-              <td> {wallet.accounts[0].address} </td>
+            <VStack>
+              <Text size="md">Address connected: {walletAddress} </Text>
               {/* <Positions addr={wallet.accounts[0].address} /> */}
-              </tr>
-            Your AAVE balances here :
-              <tr>
-              <Getbalances provider={provider} address={walletSigner} />
-              </tr>
-            </div>
-
+              <Text>Your AAVE balances here :</Text>
+              <Balances />
+            </VStack>
           }
-
-
           <Apollo />
         </main>
       </div>
-    </UserContext.Provider>
+    </Flex>
   )
 }

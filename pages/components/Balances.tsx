@@ -1,16 +1,27 @@
 import { ethers } from "ethers";
-import { useEffect, useState, useContext } from "react";
-// import { Contract, Provider } from 'ethers-multicall';
+import { useEffect, useState } from "react";
 import { TOKEN_LIST } from "../Tokenlist"
-import { UserContext } from '../index';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { Flex, Text } from "@chakra-ui/react";
+import { useWallets } from "@web3-onboard/react";
+import { getWeb3Provider } from "../../utils/ethers";
 
-function Getbalances(props) {
-    const [aTokenBalances, setATokenBalances] = useState([{}]);
-    const imported: any = useContext(UserContext);
-    const { walletSigner, provider } = imported
+type Props = {}
+
+type aTokenType = {
+    symbol: string
+    contractAddress: string
+    allowance?: string
+    balance?: string
+    tokenAddress: string
+    balanceInTokenDecimals: string
+}
+
+
+const Balances = ({} : Props) => {
+    const [aTokenBalances, setATokenBalances] = useState<aTokenType[]>([]);
+    const [wallet] = useWallets()
+    const provider = getWeb3Provider(wallet)
+    const walletSigner = wallet.accounts?.[0].address
 
     //   useEffect(() => {
     //     if(imported.walletSigner){
@@ -22,21 +33,17 @@ function Getbalances(props) {
 
     //   },[address_Imported ])//stableDebtBalances, variableDebtBalances, current]);
     useEffect(() => {
-
-        async function getAllBalances(address1) {
-            await getATokenBalances(address1);
+        async function getAllBalances(address: string) {
+            await getATokenBalances(address);
             // await getStableDebtBalances(address1);
             // await getVariableDebtBalances(address1);
         }
-        if (walletSigner.length && typeof (provider) !== "undefined") {
 
-            console.log("TOKEN_LIST", TOKEN_LIST)
-            console.log("walletSigner>>>>>", walletSigner)
+        if (walletSigner.length && provider != null) {
             getAllBalances(walletSigner)
-
         }
 
-        async function getATokenBalances(address1) {
+        async function getATokenBalances(address: string) {
             const erc20Abi = [
                 'function balanceOf(address account) view returns (uint256)'
             ];
@@ -47,23 +54,15 @@ function Getbalances(props) {
             }
 
             for (let i = 0; i < aTokenList.length; i++) {
-                console.log("address1", address1)
-                console.log(`aTokenList[i]${i}`, aTokenList[i])
                 const tokenContract = new ethers.Contract(aTokenList[i], erc20Abi, provider);
-                console.log(`tokenContract${i}`, tokenContract)
-                const tokenBalanceCall = await tokenContract.balanceOf(address1);
-
-                console.log(`tokenBalanceCall${i}`, tokenBalanceCall)
-
+                const tokenBalanceCall = await tokenContract.balanceOf(address);
                 const bigNumber = parseInt(tokenBalanceCall)// 29803630.997051883414242659
-
-                console.log(`bigNumber${i}`, bigNumber)
                 // const etherutils = ethers.utils.formatUnits(bigNumber.toString(), TOKEN_LIST[i].decimals)
                 callList.push(bigNumber);
                 console.log("calllist", callList)
             }
 
-            const aTokenBalancesList = [];
+            const aTokenBalancesList: Array<aTokenType> = [];
             for (let i = 0; i < aTokenList.length; i++) {
                 // if (!aTokenBalancesHex[i].eq(0)) {
                 //     // let newBalance = ethers.BigNumber.from(aTokenBalancesHex[i]);
@@ -75,37 +74,28 @@ function Getbalances(props) {
                 //     // }
 
                 aTokenBalancesList.push({
-                    'Symbol': 'a' + TOKEN_LIST[i].symbol,
-                    'ContractAddress': TOKEN_LIST[i].aTokenAddress,
-                    // 'tokenAddress': TOKEN_LIST[i].tokenAddress,
-                    // 'Balance': newBalance.toString(),
-                    'Allowance': undefined,
-                    'balanceInTokenDecimals': ethers.utils.formatUnits(callList[i].toString(), TOKEN_LIST[i].decimals)
+                    symbol: `a${TOKEN_LIST[i].symbol}`,
+                    contractAddress: TOKEN_LIST[i].aTokenAddress,
+                    tokenAddress: TOKEN_LIST[i].tokenAddress,
+                    // balance: newBalance.toString(),
+                    allowance: undefined,
+                    balanceInTokenDecimals: ethers.utils.formatUnits(callList[i].toString(), TOKEN_LIST[i].decimals)
                 });
             }
-            console.log('aTokenBalances: ', aTokenBalancesList);
             setATokenBalances(aTokenBalancesList)
         }
 
     }, [walletSigner, provider])
 
-    const Tickers = aTokenBalances.map((el, index) => {
-        return (
-            <>
-
-                    <tr>
-                        <td>{el.Symbol} : </td>
-                        <td>{el.balanceInTokenDecimals}</td>
-                    </tr>
-
-            </>
-        )
-    })
     return (
-        <>
-            {Tickers}
-        </>
+        <Flex flexDir="column">
+        {aTokenBalances.map((el) => (
+            <Flex key={el.symbol}>
+                <Text>{el.symbol}: {el.balanceInTokenDecimals} </Text>
+            </Flex>
+        ))}
+        </Flex>
     )
 }
 
-export default Getbalances
+export default Balances

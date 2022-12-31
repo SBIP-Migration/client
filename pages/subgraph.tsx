@@ -21,7 +21,7 @@ async function callApi() {
         body: data,
         headers: {
           'Content-Type': 'application/json',
-          'Content-Length': data.length,
+          'Content-Length': data.length.toString(),
         },
       }
     );
@@ -31,4 +31,4 @@ async function callApi() {
   
   const output = Promise.resolve(callApi());
 
-  console.log("OP",output)
+export { callApi }
