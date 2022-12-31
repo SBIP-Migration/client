@@ -101,13 +101,16 @@ export default function Home() {
           </button>
           {wallet &&
             <div >
-              Im here
-              {wallet.accounts[0].address}
+
+              <tr>
+              <td> Address connected :</td>
+              <td> {wallet.accounts[0].address} </td>
               {/* <Positions addr={wallet.accounts[0].address} /> */}
-
-              get balances here
-
+              </tr>
+            Your AAVE balances here :
+              <tr>
               <Getbalances provider={provider} address={walletSigner} />
+              </tr>
             </div>
 
           }

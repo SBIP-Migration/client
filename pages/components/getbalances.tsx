@@ -3,6 +3,9 @@ import { useEffect, useState, useContext } from "react";
 // import { Contract, Provider } from 'ethers-multicall';
 import { TOKEN_LIST } from "../Tokenlist"
 import { UserContext } from '../index';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 function Getbalances(props) {
     const [aTokenBalances, setATokenBalances] = useState([{}]);
@@ -52,11 +55,11 @@ function Getbalances(props) {
 
                 console.log(`tokenBalanceCall${i}`, tokenBalanceCall)
 
-                const format = parseInt(tokenBalanceCall)// 29803630.997051883414242659
+                const bigNumber = parseInt(tokenBalanceCall)// 29803630.997051883414242659
 
-                console.log(`format${i}`, format)
-
-                callList.push(tokenBalanceCall);
+                console.log(`bigNumber${i}`, bigNumber)
+                // const etherutils = ethers.utils.formatUnits(bigNumber.toString(), TOKEN_LIST[i].decimals)
+                callList.push(bigNumber);
                 console.log("calllist", callList)
             }
 
@@ -77,22 +80,30 @@ function Getbalances(props) {
                     // 'tokenAddress': TOKEN_LIST[i].tokenAddress,
                     // 'Balance': newBalance.toString(),
                     'Allowance': undefined,
-                    // 'balanceInTokenDecimals': ethers.utils.formatUnits(newBalance, TOKEN_LIST[i].decimals)
+                    'balanceInTokenDecimals': ethers.utils.formatUnits(callList[i].toString(), TOKEN_LIST[i].decimals)
                 });
             }
+            console.log('aTokenBalances: ', aTokenBalancesList);
+            setATokenBalances(aTokenBalancesList)
         }
-        // console.log('aTokenBalances: ', aTokenBalancesList);
-        // setATokenBalances(aTokenBalancesList);
-
-
-
-
-
 
     }, [walletSigner, provider])
+
+    const Tickers = aTokenBalances.map((el, index) => {
+        return (
+            <>
+
+                    <tr>
+                        <td>{el.Symbol} : </td>
+                        <td>{el.balanceInTokenDecimals}</td>
+                    </tr>
+
+            </>
+        )
+    })
     return (
         <>
-            {/* {aTokenBalances} */}
+            {Tickers}
         </>
     )
 }
