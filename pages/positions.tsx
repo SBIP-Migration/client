@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 
 function Positions(props) {
-    const [status, setStatus] = useState()
+    const [status, setStatus] = useState<string>()
     const [data, setData] = useState([])
     const [data_lending, setData_lending] = useState([])
 

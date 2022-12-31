@@ -1,4 +1,13 @@
-export const TOKEN_LIST = [
+export type Token = {
+  symbol: string
+  tokenAddress: string
+  aTokenAddress: string
+  stableDebtTokenAddress: string
+  variableDebtTokenAddress: string
+  decimals: string
+}
+
+export const TOKEN_LIST: Array<Token> = [
     // {
     //   symbol: 'AAVE',
     //   tokenAddress: '0xB597cd8D3217ea6477232F9217fa70837ff667Af',
@@ -124,7 +133,7 @@ export const TOKEN_LIST = [
       symbol: 'WETH',
       tokenAddress: '0x2e3A2fb8473316A02b8A297B982498E661E1f6f5',
       aTokenAddress: '0x27B4692C93959048833f40702b22FE3578E77759',
-      // stableDebtTokenAddress: '0x1F85D0dc45332D00aead98D26db0735350F80D18',
+      stableDebtTokenAddress: '0x1F85D0dc45332D00aead98D26db0735350F80D18',
       variableDebtTokenAddress: '0xDD13CE9DE795E7faCB6fEC90E346C7F3abe342E2',
       decimals: '18'
       // symbol: 'WETH',
@@ -138,7 +147,7 @@ export const TOKEN_LIST = [
       symbol: 'USDC',
       tokenAddress: '0xe22da380ee6B445bb8273C81944ADEB6E8450422',
       aTokenAddress: '0x1Ee669290939f8a8864497Af3BC83728715265FF',
-      // stableDebtTokenAddress: '0x252C017036b144A812b53BC122d0E67cBB451aD4',
+      stableDebtTokenAddress: '0x252C017036b144A812b53BC122d0E67cBB451aD4',
       variableDebtTokenAddress: '0x3e491EB1A98cD42F9BBa388076Fd7a74B3470CA0',//
       decimals: '6'
       //
