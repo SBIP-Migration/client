@@ -1,13 +1,13 @@
 import { ethers } from "ethers";
 import { useEffect, useState, useContext } from "react";
-import { Contract, Provider } from 'ethers-multicall';
+// import { Contract, Provider } from 'ethers-multicall';
 import { TOKEN_LIST } from "../Tokenlist"
 import { UserContext } from '../index';
 
 function Getbalances(props) {
     const [aTokenBalances, setATokenBalances] = useState([{}]);
-    const imported = useContext(UserContext);
-
+    const imported: any = useContext(UserContext);
+    const { walletSigner, provider } = imported
 
     //   useEffect(() => {
     //     if(imported.walletSigner){
@@ -19,23 +19,21 @@ function Getbalances(props) {
 
     //   },[address_Imported ])//stableDebtBalances, variableDebtBalances, current]);
     useEffect(() => {
-        console.log("importedwalletSigner", imported.walletSigner)
-        console.log("importedprovider", imported.provider)
-        // console.log("props.provider", props.provider)  
-        console.log("TOKEN_LIST", TOKEN_LIST)
 
         async function getAllBalances(address1) {
             await getATokenBalances(address1);
             // await getStableDebtBalances(address1);
             // await getVariableDebtBalances(address1);
         }
-        if (imported.walletSigner) {
-            console.log("props.provider>>>>>", props.provider)
-            getAllBalances(imported.walletSigner)
+        if (walletSigner.length && typeof (provider) !== "undefined") {
+
+            console.log("TOKEN_LIST", TOKEN_LIST)
+            console.log("walletSigner>>>>>", walletSigner)
+            getAllBalances(walletSigner)
 
         }
+
         async function getATokenBalances(address1) {
-            const ethcallProvider = new Provider(imported.provider, 42);
             const erc20Abi = [
                 'function balanceOf(address account) view returns (uint256)'
             ];
@@ -46,58 +44,52 @@ function Getbalances(props) {
             }
 
             for (let i = 0; i < aTokenList.length; i++) {
-                const tokenContract = new Contract(aTokenList[i], erc20Abi);
-                console.log(`tokenContract${i}`,tokenContract)
-                const tokenBalanceCall = tokenContract.balanceOf(address1);
-                console.log(`tokenBalanceCall${i}`,tokenBalanceCall)
+                console.log("address1", address1)
+                console.log(`aTokenList[i]${i}`, aTokenList[i])
+                const tokenContract = new ethers.Contract(aTokenList[i], erc20Abi, provider);
+                console.log(`tokenContract${i}`, tokenContract)
+                const tokenBalanceCall = await tokenContract.balanceOf(address1);
+
+                console.log(`tokenBalanceCall${i}`, tokenBalanceCall)
 
                 const format = parseInt(tokenBalanceCall)// 29803630.997051883414242659
 
-                console.log(`format${i}`,format)
+                console.log(`format${i}`, format)
 
                 callList.push(tokenBalanceCall);
                 console.log("calllist", callList)
             }
-            // if (ethcallProvider._provider) {
-            //     const aTokenBalancesHex1 = await imported.provider(callList[0]);
-            //     console.log("aTokenBalancesHex1",aTokenBalancesHex1)
-            // }    
-            // if (ethcallProvider._provider) {
-            //     console.log("ethcallProvider", ethcallProvider)
-            //     // const aTokenBalancesHex = await ethcallProvider.all(callList);
 
+            const aTokenBalancesList = [];
+            for (let i = 0; i < aTokenList.length; i++) {
+                // if (!aTokenBalancesHex[i].eq(0)) {
+                //     // let newBalance = ethers.BigNumber.from(aTokenBalancesHex[i]);
+                //     // if (newBalance.lt(100000)) {
+                //     //     console.log('Balance too low to be stored');
+                //     //     newBalance = ethers.BigNumber.from('0');
+                //     // } else {
+                //     //     newBalance = newBalance.sub(newBalance.div(100000));
+                //     // }
 
-            //     const aTokenBalancesList = [];
-            //     for (let i = 0; i < aTokenBalancesHex.length; i++) {
-            //         if (!aTokenBalancesHex[i].eq(0)) {
-            //             // let newBalance = ethers.BigNumber.from(aTokenBalancesHex[i]);
-            //             // if (newBalance.lt(100000)) {
-            //             //     console.log('Balance too low to be stored');
-            //             //     newBalance = ethers.BigNumber.from('0');
-            //             // } else {
-            //             //     newBalance = newBalance.sub(newBalance.div(100000));
-            //             // }
-
-            //             aTokenBalancesList.push({
-            //                 'Symbol': 'a' + TOKEN_LIST[i].symbol,
-            //                 'ContractAddress': TOKEN_LIST[i].aTokenAddress,
-            //                 'tokenAddress': TOKEN_LIST[i].tokenAddress,
-            //                 'Balance': newBalance.toString(),
-            //                 'Allowance': undefined,
-            //                 'balanceInTokenDecimals': ethers.utils.formatUnits(newBalance, TOKEN_LIST[i].decimals)
-            //             });
-            //         }
-            //     }
-            //     console.log('aTokenBalances: ', aTokenBalancesList);
-            //     setATokenBalances(aTokenBalancesList);
-            //     // console.log()
-
-            // }
-
-
+                aTokenBalancesList.push({
+                    'Symbol': 'a' + TOKEN_LIST[i].symbol,
+                    'ContractAddress': TOKEN_LIST[i].aTokenAddress,
+                    // 'tokenAddress': TOKEN_LIST[i].tokenAddress,
+                    // 'Balance': newBalance.toString(),
+                    'Allowance': undefined,
+                    // 'balanceInTokenDecimals': ethers.utils.formatUnits(newBalance, TOKEN_LIST[i].decimals)
+                });
+            }
         }
+        // console.log('aTokenBalances: ', aTokenBalancesList);
+        // setATokenBalances(aTokenBalancesList);
 
-    }, [imported])
+
+
+
+
+
+    }, [walletSigner, provider])
     return (
         <>
             {/* {aTokenBalances} */}

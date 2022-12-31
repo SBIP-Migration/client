@@ -137,10 +137,11 @@ export const TOKEN_LIST = [
     {
       symbol: 'USDC',
       tokenAddress: '0xe22da380ee6B445bb8273C81944ADEB6E8450422',
-      aTokenAddress: '0xe12AFeC5aa12Cf614678f9bFeeB98cA9Bb95b5B0',
-      stableDebtTokenAddress: '0x252C017036b144A812b53BC122d0E67cBB451aD4',
+      aTokenAddress: '0x1Ee669290939f8a8864497Af3BC83728715265FF',
+      // stableDebtTokenAddress: '0x252C017036b144A812b53BC122d0E67cBB451aD4',
       variableDebtTokenAddress: '0x3e491EB1A98cD42F9BBa388076Fd7a74B3470CA0',//
       decimals: '6'
+      //
       // symbol: 'USDC',
       // tokenAddress: '0xe22da380ee6B445bb8273C81944ADEB6E8450422',
       // aTokenAddress: '0xe12AFeC5aa12Cf614678f9bFeeB98cA9Bb95b5B0',

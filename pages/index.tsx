@@ -60,7 +60,6 @@ export default function Home() {
     if (wallet) {
       ethersProvider = new ethers.providers.Web3Provider(wallet.provider, 'any')
       setProvider(ethersProvider)
-      console.log("wallet.accounts[0].address", wallet.accounts[0].address)
       setWalletsigner(wallet.accounts[0].address)
     }
 
