@@ -1,3 +1,4 @@
+import { useEffect, useState, createContext, useContext } from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { init, useConnectWallet } from '@web3-onboard/react'
@@ -9,6 +10,9 @@ import Positions from './positions'
 import Link from "next/link";
 
 import Apollo from './api/apollo'
+import Getbalances from './components/getbalances'
+export const UserContext = createContext();
+
 const injected = injectedModule()
 
 const buttonStyles = {
@@ -27,7 +31,7 @@ const buttonStyles = {
 // Only one RPC endpoint required per chain
 const rpcAPIKey = '<INFURA_KEY>' || '<ALCHEMY_KEY>'
 const rpcUrl = process.env.NEXT_PUBLIC_GOERLI_URL
-console.log("rpcUrl",rpcUrl)
+console.log("rpcUrl", rpcUrl)
 // initialize Onboard
 init({
   wallets: [injected],
@@ -42,60 +46,79 @@ init({
 })
 
 
-
+//export default 
 export default function Home() {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
+  const [provider, setProvider] = useState()
+  const [walletSigner, setWalletsigner] = useState({})
 
   // create an ethers provider
   let ethersProvider
 
-  if (wallet) {
-    ethersProvider = new ethers.providers.Web3Provider(wallet.provider, 'any')
-    // console.log("wallet",wallet)
-  }
+  useEffect(() => {
+
+    if (wallet) {
+      ethersProvider = new ethers.providers.Web3Provider(wallet.provider, 'any')
+      setProvider(ethersProvider)
+      setWalletsigner(wallet.accounts[0].address)
+    }
+
+  }, [wallet]);
+
 
   return (
-    <div className={styles.container}>
-      <Link href="/gotoapp">
-        <button className="btn btn-danger border-0 history-btn px-4 py-3 ms-auto">
-          Go To App
-        </button>
-      </Link>
-      <Head>
-        <title>Web3-Onboard Demo</title>
-        <meta
-          name="description"
-          content="Example of how to integrate Web3-Onboard with Next.js"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <UserContext.Provider value={{walletSigner:walletSigner, provider:provider }}>
+      <div className={styles.container}>
+        <Link href="/gotoapp">
+          <button className="btn btn-danger border-0 history-btn px-4 py-3 ms-auto">
+            Go To App
+          </button>
+        </Link>
+        <Head>
+          <title>Web3-Onboard Demo</title>
+          <meta
+            name="description"
+            content="Example of how to integrate Web3-Onboard with Next.js"
+          />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to this demo of
-          <a href="https://onboard.blocknative.com">
-            {' '}
-            Web3-Onboard
-          </a>
-          !
-        </h1>
-        <button
-          style={buttonStyles}
-          disabled={connecting}
-          onClick={() => (wallet ? disconnect(wallet) : connect())}
-        >
-          {connecting ? 'Connecting' : wallet ? 'Disconnect' : 'Connect'}
-        </button>
-        {wallet &&
-                <div >
-                  Im here
-                  {wallet.accounts[0].address}
-                  <Positions addr={wallet.accounts[0].address}/>
-                </div>
-            }
-            
-            <Apollo/>
-      </main>
-    </div>
+        <main className={styles.main}>
+          <h1 className={styles.title}>
+            Welcome to this demo of
+            <a href="https://onboard.blocknative.com">
+              {' '}
+              Web3-Onboard
+            </a>
+            !
+          </h1>
+          <button
+            style={buttonStyles}
+            disabled={connecting}
+            onClick={() => (wallet ? disconnect(wallet) : connect())}
+          >
+            {connecting ? 'Connecting' : wallet ? 'Disconnect' : 'Connect'}
+          </button>
+          {wallet &&
+            <div >
+
+              <tr>
+              <td> Address connected :</td>
+              <td> {wallet.accounts[0].address} </td>
+              {/* <Positions addr={wallet.accounts[0].address} /> */}
+              </tr>
+            Your AAVE balances here :
+              <tr>
+              <Getbalances provider={provider} address={walletSigner} />
+              </tr>
+            </div>
+
+          }
+
+
+          <Apollo />
+        </main>
+      </div>
+    </UserContext.Provider>
   )
 }
