@@ -6,8 +6,7 @@ import { ethers, getDefaultProvider } from 'ethers'
 
 import injectedModule from '@web3-onboard/injected-wallets'
 
-import Positions from './positions'
-import Link from "next/link";
+import Link from 'next/link'
 
 import Apollo from './api/apollo'
 import Balances from './components/Balances'
@@ -25,28 +24,25 @@ const buttonStyles = {
   color: 'white',
   padding: '14px 12px',
   marginTop: '40px',
-  fontFamily: 'inherit'
+  fontFamily: 'inherit',
 }
 
-// Only one RPC endpoint required per chain
-const rpcAPIKey = '<INFURA_KEY>' || '<ALCHEMY_KEY>'
 const rpcUrl = process.env.NEXT_PUBLIC_GOERLI_URL
-console.log("rpcUrl", rpcUrl)
+
 // initialize Onboard
 init({
   wallets: [injected],
   chains: [
     {
-      id: '0x5',//'0x1',0x5 ****
+      id: '0x5',
       token: 'ETH',
       label: 'Goerli Testnet',
-      rpcUrl
-    }
-  ]
+      rpcUrl,
+    },
+  ],
 })
 
-
-//export default 
+//export default
 export default function Home() {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
   const walletAddress = wallet?.accounts?.[0].address
@@ -68,27 +64,33 @@ export default function Home() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <main className={styles.main}>
-          <Heading as="h1" size="lg">
+        <Flex
+          flexDir="column"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+          mt="72px"
+        >
+          <Heading as="h1" size="lg" textAlign="center">
             OmniTransfer - Transfer all your tokens & positions in one click
           </Heading>
-          <Button
-            style={buttonStyles}
-            disabled={connecting}
-            onClick={() => (wallet ? disconnect(wallet) : connect())}
-          >
-            {connecting ? 'Connecting' : wallet ? 'Disconnect' : 'Connect'}
-          </Button>
-          {wallet &&
+          {!wallet && (
+            <Button
+              style={buttonStyles}
+              disabled={connecting}
+              onClick={() => (wallet ? disconnect(wallet) : connect())}
+            >
+              {connecting ? 'Connecting' : 'Connect'}
+            </Button>
+          )}
+          {wallet && (
             <VStack>
               <Text size="md">Address connected: {walletAddress} </Text>
-              {/* <Positions addr={wallet.accounts[0].address} /> */}
-              <Text>Your AAVE balances here :</Text>
               <Balances />
             </VStack>
-          }
+          )}
           <Apollo />
-        </main>
+        </Flex>
       </div>
     </Flex>
   )

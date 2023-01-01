@@ -26,7 +26,7 @@ const approveToken = async (
 
   const erc20Contract = new ethers.Contract(tokenAddress, erc20ABI, signer)
 
-  await erc20Contract.approve(contractAddress, amount)
+  return await erc20Contract.functions.approve(contractAddress, amount)
 }
 
 export { getWeb3Provider, approveToken }
