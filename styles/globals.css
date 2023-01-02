@@ -112,6 +112,9 @@ a {
 
 
 .circle {
+  display: flex;
+  justify-content: space-around;
+  font-size: 20px;
   width: 29px;
   height: 29px;
   line-height: 25px;
