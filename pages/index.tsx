@@ -17,6 +17,7 @@ import {
   getVariableDebtBalances,
 } from '../utils/balances'
 import { ethers } from 'ethers'
+import Step_progess from './stepprogress/step_progress'
 
 const injected = injectedModule()
 
@@ -140,6 +141,7 @@ export default function Home() {
           {wallet && (
             <VStack>
               <Text size="md">Address connected: {walletSigner} </Text>
+              <Step_progess/>
               <Balances
                 refreshTokenBalances={() => getAllBalances(walletSigner)}
                 aTokenBalances={aTokenBalances}
