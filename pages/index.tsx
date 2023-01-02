@@ -95,12 +95,11 @@ export default function Home() {
 
   useEffect(() => {
     ;(async () => {
-      if (!provider) return
       if (walletSigner?.length && provider != null) {
         await getAllBalances(walletSigner)
       }
     })()
-  }, [walletSigner, getAllBalances, wallet, provider])
+  }, [walletSigner, getAllBalances, provider])
 
   return (
     <Flex flexDir="column">
