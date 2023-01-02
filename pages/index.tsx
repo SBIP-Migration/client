@@ -3,8 +3,6 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { init, useConnectWallet } from '@web3-onboard/react'
 
-import injectedModule from '@web3-onboard/injected-wallets'
-
 import Balances, { WrapperTokenType } from './components/Balances'
 import {
   Button,
@@ -30,8 +28,6 @@ import {
 import { ethers } from 'ethers'
 import Step_progess from './stepprogress/step_progress'
 
-const injected = injectedModule()
-
 const buttonStyles = {
   borderRadius: '6px',
   background: '#111827',
@@ -44,8 +40,6 @@ const buttonStyles = {
   marginTop: '40px',
   fontFamily: 'inherit',
 }
-
-const rpcUrl = process.env.NEXT_PUBLIC_GOERLI_URL
 
 export default function Home() {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
@@ -89,28 +83,19 @@ export default function Home() {
     [provider]
   )
 
-  const onDisconnectWallet = () => {
+  const onDisconnectWallet = useCallback(() => {
     disconnect(wallet)
-  }
+  }, [disconnect, wallet])
 
-  const onConnectRecipientWallet = () => {
+  const onConnectRecipientWallet = useCallback(() => {
     connect()
     onClose()
-  }
+  }, [connect, onClose])
 
-  useEffect(() => {
-    init({
-      wallets: [injected],
-      chains: [
-        {
-          id: '0x5',
-          token: 'ETH',
-          label: 'Goerli Testnet',
-          rpcUrl,
-        },
-      ],
-    })
-  }, [])
+  // Call this function, when we want to switch wallets
+  const onSwitchWallet = useCallback(() => {
+    onOpen()
+  }, [onOpen])
 
   useEffect(() => {
     if (!wallet) return
@@ -162,18 +147,22 @@ export default function Home() {
               <Balances
                 refreshTokenBalances={() => getAllBalances(walletSigner)}
                 aTokenBalances={aTokenBalances}
-                stableDebtBalances={stableDebtBalances}
-                variableDebtBalances={variableDebtBalances}
               />
             </VStack>
           )}
-          <Modal isOpen={isOpen} onClose={onClose}>
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            closeOnEsc={false}
+            closeOnOverlayClick={false}
+          >
             <ModalOverlay />
             <ModalContent>
               <ModalHeader>Switch Wallet</ModalHeader>
               <ModalBody>
-                <Text>
-                  Disconnect current wallet, and connect the recipient wallet
+                <Text textAlign="center">
+                  Disconnect current wallet, and connect the recipient wallet to
+                  approve the credit delegation for the incoming debt tokens
                 </Text>
               </ModalBody>
               <ModalFooter>
