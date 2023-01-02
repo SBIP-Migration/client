@@ -11,6 +11,7 @@ import Link from 'next/link'
 import Apollo from './api/apollo'
 import Balances from './components/Balances'
 import { Button, Flex, Heading, Text, VStack } from '@chakra-ui/react'
+import Step_progess from './stepprogress/step_progess'
 
 const injected = injectedModule()
 
@@ -74,6 +75,9 @@ export default function Home() {
           <Heading as="h1" size="lg" textAlign="center">
             OmniTransfer - Transfer all your tokens & positions in one click
           </Heading>
+
+
+
           {!wallet && (
             <Button
               style={buttonStyles}
@@ -84,14 +88,18 @@ export default function Home() {
             </Button>
           )}
           {wallet && (
+
             <VStack>
+              <Step_progess />
               <Text size="md">Address connected: {walletAddress} </Text>
               <Balances />
             </VStack>
           )}
           <Apollo />
+
         </Flex>
       </div>
     </Flex>
+
   )
 }
