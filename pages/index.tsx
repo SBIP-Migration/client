@@ -3,13 +3,22 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { init, useConnectWallet } from '@web3-onboard/react'
 
-import injectedModule from '@web3-onboard/injected-wallets'
-
-import Link from 'next/link'
-
-import Apollo from './api/apollo'
 import Balances, { WrapperTokenType } from './components/Balances'
-import { Button, Flex, Heading, Text, VStack } from '@chakra-ui/react'
+import {
+  Button,
+  Flex,
+  Heading,
+  Text,
+  VStack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from '@chakra-ui/react'
 import { getWeb3Provider } from '../utils/ethers'
 import {
   getATokenBalances,
@@ -18,8 +27,6 @@ import {
 } from '../utils/balances'
 import { ethers } from 'ethers'
 import Step_progess from './stepprogress/step_progress'
-
-const injected = injectedModule()
 
 const buttonStyles = {
   borderRadius: '6px',
@@ -34,23 +41,10 @@ const buttonStyles = {
   fontFamily: 'inherit',
 }
 
-const rpcUrl = process.env.NEXT_PUBLIC_GOERLI_URL
-
-// initialize Onboard
-init({
-  wallets: [injected],
-  chains: [
-    {
-      id: '0x5',
-      token: 'ETH',
-      label: 'Goerli Testnet',
-      rpcUrl,
-    },
-  ],
-})
-
 export default function Home() {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   const walletSigner = wallet?.accounts?.[0].address
 
   const [provider, setProvider] = useState<ethers.providers.Provider>()
@@ -89,6 +83,20 @@ export default function Home() {
     [provider]
   )
 
+  const onDisconnectWallet = useCallback(() => {
+    disconnect(wallet)
+  }, [disconnect, wallet])
+
+  const onConnectRecipientWallet = useCallback(() => {
+    connect()
+    onClose()
+  }, [connect, onClose])
+
+  // Call this function, when we want to switch wallets
+  const onSwitchWallet = useCallback(() => {
+    onOpen()
+  }, [onOpen])
+
   useEffect(() => {
     if (!wallet) return
     setProvider(getWeb3Provider(wallet))
@@ -105,20 +113,14 @@ export default function Home() {
   return (
     <Flex flexDir="column">
       <div className={styles.container}>
-        <Link href="/gotoapp">
-          <button className="btn btn-danger border-0 history-btn px-4 py-3 ms-auto">
-            Go To App
-          </button>
-        </Link>
         <Head>
-          <title>Web3-Onboard Demo</title>
+          <title>OmniTransfer</title>
           <meta
             name="description"
-            content="Example of how to integrate Web3-Onboard with Next.js"
+            content="Migrate your Aave positions to another wallet"
           />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-
         <Flex
           flexDir="column"
           justifyContent="center"
@@ -141,16 +143,41 @@ export default function Home() {
           {wallet && (
             <VStack>
               <Text size="md">Address connected: {walletSigner} </Text>
-              <Step_progess/>
+              <Step_progess />
               <Balances
                 refreshTokenBalances={() => getAllBalances(walletSigner)}
                 aTokenBalances={aTokenBalances}
-                stableDebtBalances={stableDebtBalances}
-                variableDebtBalances={variableDebtBalances}
               />
             </VStack>
           )}
-          <Apollo />
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            closeOnEsc={false}
+            closeOnOverlayClick={false}
+          >
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Switch Wallet</ModalHeader>
+              <ModalBody>
+                <Text textAlign="center">
+                  Disconnect current wallet, and connect the recipient wallet to
+                  approve the credit delegation for the incoming debt tokens
+                </Text>
+              </ModalBody>
+              <ModalFooter>
+                {wallet ? (
+                  <Button colorScheme="blue" onClick={onDisconnectWallet}>
+                    Disconnect Wallet
+                  </Button>
+                ) : (
+                  <Button colorScheme="blue" onClick={onConnectRecipientWallet}>
+                    Connect Recipient Wallet
+                  </Button>
+                )}
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
         </Flex>
       </div>
     </Flex>
