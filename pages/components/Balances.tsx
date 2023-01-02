@@ -1,49 +1,30 @@
 import { BigNumber, ethers } from 'ethers'
-import { useCallback, useEffect, useState } from 'react'
 import { Button, Flex, Heading, Text } from '@chakra-ui/react'
 import { useWallets } from '@web3-onboard/react'
-import { approveToken, getWeb3Provider } from '../../utils/ethers'
+import { approveToken } from '../../utils/ethers'
 import { AAVE_MIGRATION_CONTRACT } from '../../constants'
-import { getATokenBalances } from '../../utils/balances'
 
-type Props = {}
+type Props = {
+  aTokenBalances: WrapperTokenType[]
+  refreshTokenBalances: () => Promise<void>
+}
 
-export type aTokenType = {
+export type WrapperTokenType = {
   symbol: string
   contractAddress: string
 
   allowance: BigNumber
   balance: BigNumber
 
+  // Underlying token
   tokenAddress: string
   balanceInTokenDecimals: string
 }
 
-const Balances = ({}: Props) => {
-  const [aTokenBalances, setATokenBalances] = useState<aTokenType[]>([])
+const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
   const [wallet] = useWallets()
-  const provider = getWeb3Provider(wallet)
-  const walletSigner = wallet.accounts?.[0].address
 
-  const getAllBalances = useCallback(
-    async (address: string) => {
-      const aTokenBalances = await getATokenBalances(provider, address)
-      setATokenBalances(aTokenBalances)
-      // await getStableDebtBalances(address);
-      // await getVariableDebtBalances(address);
-    },
-    [provider]
-  )
-
-  useEffect(() => {
-    ;(async () => {
-      if (walletSigner.length && provider != null) {
-        await getAllBalances(walletSigner)
-      }
-    })()
-  }, [walletSigner, provider, getAllBalances])
-
-  const onHandleApprove = async (token: aTokenType) => {
+  const onHandleApprove = async (token: WrapperTokenType) => {
     const tx = await approveToken(
       wallet,
       AAVE_MIGRATION_CONTRACT,
@@ -53,7 +34,7 @@ const Balances = ({}: Props) => {
     )
     // Wait until transaction is confirmed, then update "allowance" status
     await tx.wait()
-    await getAllBalances(walletSigner)
+    await refreshTokenBalances()
   }
 
   const onHandleNext = async () => {
