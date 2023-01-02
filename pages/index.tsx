@@ -145,6 +145,8 @@ export default function Home() {
               <Balances
                 refreshTokenBalances={() => getAllBalances(walletSigner)}
                 aTokenBalances={aTokenBalances}
+                stableDebtBalances={stableDebtBalances}
+                variableDebtBalances={variableDebtBalances}
               />
             </VStack>
           )}
