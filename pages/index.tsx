@@ -1,16 +1,21 @@
-import { useEffect, useState, createContext, useContext } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import { init, useConnectWallet, useAppState } from '@web3-onboard/react'
-import { ethers, getDefaultProvider } from 'ethers'
+import { init, useConnectWallet } from '@web3-onboard/react'
 
 import injectedModule from '@web3-onboard/injected-wallets'
 
 import Link from 'next/link'
 
 import Apollo from './api/apollo'
-import Balances from './components/Balances'
+import Balances, { WrapperTokenType } from './components/Balances'
 import { Button, Flex, Heading, Text, VStack } from '@chakra-ui/react'
+import { getWeb3Provider } from '../utils/ethers'
+import {
+  getATokenBalances,
+  getStableDebtBalances,
+  getVariableDebtBalances,
+} from '../utils/balances'
 
 const injected = injectedModule()
 
@@ -42,10 +47,52 @@ init({
   ],
 })
 
-//export default
 export default function Home() {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
-  const walletAddress = wallet?.accounts?.[0].address
+  const walletSigner = wallet.accounts?.[0].address
+  const provider = getWeb3Provider(wallet)
+
+  const [aTokenBalances, setATokenBalances] = useState<WrapperTokenType[]>([])
+  const [stableDebtBalances, setStableDebtBalances] = useState<
+    WrapperTokenType[]
+  >([])
+  const [variableDebtBalances, setVariableDebtBalances] = useState<
+    WrapperTokenType[]
+  >([])
+
+  const getAllBalances = useCallback(
+    async (address: string) => {
+      const [
+        aTokenBalancesPromise,
+        stableDebtBalancesPromise,
+        variableDebtBalancesPromise,
+      ] = await Promise.allSettled([
+        getATokenBalances(provider, address),
+        getStableDebtBalances(provider, address),
+        getVariableDebtBalances(provider, address),
+      ])
+      if (aTokenBalancesPromise.status === 'fulfilled') {
+        setATokenBalances(aTokenBalancesPromise.value)
+      }
+
+      if (stableDebtBalancesPromise.status === 'fulfilled') {
+        setStableDebtBalances(stableDebtBalancesPromise.value)
+      }
+
+      if (variableDebtBalancesPromise.status === 'fulfilled') {
+        setVariableDebtBalances(variableDebtBalancesPromise.value)
+      }
+    },
+    [provider]
+  )
+
+  useEffect(() => {
+    ;(async () => {
+      if (walletSigner.length && provider != null) {
+        await getAllBalances(walletSigner)
+      }
+    })()
+  }, [walletSigner, provider, getAllBalances])
 
   return (
     <Flex flexDir="column">
@@ -85,8 +132,11 @@ export default function Home() {
           )}
           {wallet && (
             <VStack>
-              <Text size="md">Address connected: {walletAddress} </Text>
-              <Balances />
+              <Text size="md">Address connected: {walletSigner} </Text>
+              <Balances
+                refreshTokenBalances={() => getAllBalances(walletSigner)}
+                aTokenBalances={aTokenBalances}
+              />
             </VStack>
           )}
           <Apollo />

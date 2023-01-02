@@ -41,9 +41,7 @@ function Gotoapp() {
     return <div>Not Loading...</div>
   }
 
-  const tickers = data.forEach((each) => {
-    console.log('each', each)
-  })
+  const tickers = data
 
   return (
     <>
