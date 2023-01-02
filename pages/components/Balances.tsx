@@ -9,6 +9,11 @@ type Props = {
   refreshTokenBalances: () => Promise<void>
 }
 
+// I think we should put the stableDebtBalances & variableDebtBalances 
+// in its own container? 
+
+// then handle the "step" logic in "index.tsx" file
+
 export type WrapperTokenType = {
   symbol: string
   contractAddress: string
@@ -21,7 +26,7 @@ export type WrapperTokenType = {
   balanceInTokenDecimals: string
 }
 
-const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
+const Balances = ({ aTokenBalances,  refreshTokenBalances }: Props) => {
   const [wallet] = useWallets()
 
   const onHandleApprove = async (token: WrapperTokenType) => {
@@ -64,6 +69,7 @@ const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
             </Button>
           </Flex>
         ))}
+
         <Button onClick={onHandleNext}>Next</Button>
       </Flex>
     </Flex>
