@@ -16,6 +16,7 @@ import {
   getStableDebtBalances,
   getVariableDebtBalances,
 } from '../utils/balances'
+import { ethers } from 'ethers'
 
 const injected = injectedModule()
 
@@ -49,9 +50,9 @@ init({
 
 export default function Home() {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
-  const walletSigner = wallet.accounts?.[0].address
-  const provider = getWeb3Provider(wallet)
+  const walletSigner = wallet?.accounts?.[0].address
 
+  const [provider, setProvider] = useState<ethers.providers.Provider>()
   const [aTokenBalances, setATokenBalances] = useState<WrapperTokenType[]>([])
   const [stableDebtBalances, setStableDebtBalances] = useState<
     WrapperTokenType[]
@@ -62,6 +63,7 @@ export default function Home() {
 
   const getAllBalances = useCallback(
     async (address: string) => {
+      if (!provider) return
       const [
         aTokenBalancesPromise,
         stableDebtBalancesPromise,
@@ -87,12 +89,18 @@ export default function Home() {
   )
 
   useEffect(() => {
+    if (!wallet) return
+    setProvider(getWeb3Provider(wallet))
+  }, [wallet])
+
+  useEffect(() => {
     ;(async () => {
-      if (walletSigner.length && provider != null) {
+      if (!provider) return
+      if (walletSigner?.length && provider != null) {
         await getAllBalances(walletSigner)
       }
     })()
-  }, [walletSigner, provider, getAllBalances])
+  }, [walletSigner, getAllBalances, wallet, provider])
 
   return (
     <Flex flexDir="column">
