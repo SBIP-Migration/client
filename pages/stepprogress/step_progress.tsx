@@ -3,7 +3,7 @@ import StepNavigation from "./stepNavigation";
 
 function Step_progess() {
 
-  const labelArray = ['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5']
+  const labelArray = ['Step 1', 'Step 2', 'Step 3', 'Step 4']
   const [currentStep, updateCurrentStep] = useState(1);
 
   function updateStep(step) {

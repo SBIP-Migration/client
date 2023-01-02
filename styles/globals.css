@@ -113,18 +113,19 @@ a {
 .circle {
   display: flex;
   justify-content: space-around;
-  width: 29px;
+  width: 30px;
   height: 29px;
   line-height: 25px;
   background-color: green;
   color: white;
   border-radius: 50%;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   cursor: pointer;
   -moz-background-clip: padding-box;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
+
 
 .stepWrapper {
   display: flex;
@@ -132,8 +133,18 @@ a {
 }
 
 .stepBlock .circleWrapper {
-  padding: 0px 20px;
+  display: flex;
+  width: 170px;
+  /* margin-right: 10px; */
+  /* justify-items: ; */
+  padding: 0px 30px;
   position: relative;
+}
+.stepbox{
+  /* margin-right: 30px; */
+  display: flex;
+  /* width: 100px; */
+  /* justify-content: space-around */
 }
 
 .selected .circle {
