@@ -11,6 +11,7 @@ const getStableDebtBalances = async (
   const stableDebtTokenAddresses: string[] = []
   for (let i = 0; i < TOKEN_LIST.length; i++) {
     stableDebtTokenAddresses.push(TOKEN_LIST[i].stableDebtTokenAddress)
+    console.log('stableDebtTokenAddresses',stableDebtTokenAddresses)
   }
 
   let stableDebtBalancesList: Array<WrapperTokenType> = []
@@ -37,6 +38,8 @@ const getStableDebtBalances = async (
         TOKEN_LIST[i].decimals
       ),
     })
+
+    console.log("tokenContract>>",tokenContract)
   }
 
   return stableDebtBalancesList

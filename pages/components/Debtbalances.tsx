@@ -3,29 +3,19 @@ import { Button, Flex, Heading, Text } from '@chakra-ui/react'
 import { useWallets } from '@web3-onboard/react'
 import { approveToken } from '../../utils/ethers'
 import { AAVE_MIGRATION_CONTRACT } from '../../constants'
+import { WrapperTokenType } from './Balances'
 
 type Props = {
   stableDebtBalances: WrapperTokenType[]
   variableDebtBalances: WrapperTokenType[]
   refreshTokenBalances: () => Promise<void>
 }
-
-export type WrapperTokenType = {
-    symbol: string
-    contractAddress: string
-  
-    allowance: BigNumber
-    balance: BigNumber
-  
-    // Underlying token
-    tokenAddress: string
-    balanceInTokenDecimals: string
-  }
   
   const DebtBalances = ({stableDebtBalances, variableDebtBalances, refreshTokenBalances }: Props) => {
     const [wallet] = useWallets()
-  
-    console.log("wallet>>>",wallet)
+    console.log("wallet",wallet)
+    console.log("variableDebtBalances",variableDebtBalances)
+    console.log("stableDebtBalances",stableDebtBalances)
     const onHandleNext = async () => {
       // Credit Delegation for debt positions
     }

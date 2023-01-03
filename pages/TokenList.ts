@@ -147,16 +147,9 @@ export const TOKEN_LIST: Array<Token> = [
     symbol: 'USDC',
     tokenAddress: '0xA2025B15a1757311bfD68cb14eaeFCc237AF5b43',
     aTokenAddress: '0x1Ee669290939f8a8864497Af3BC83728715265FF',
-    stableDebtTokenAddress: '0xF04958AeA8b7F24Db19772f84d7c2aC801D9Cf8b',
-    variableDebtTokenAddress: '0x3e491EB1A98cD42F9BBa388076Fd7a74B3470CA0', //
+    stableDebtTokenAddress: '0xF04958AeA8b7F24Db19772f84d7c2aC801D9Cf8b', //0xF04958AeA8b7F24Db19772f84d7c2aC801D9Cf8b
+    variableDebtTokenAddress: '0x3e491EB1A98cD42F9BBa388076Fd7a74B3470CA0', //0x3e491EB1A98cD42F9BBa388076Fd7a74B3470CA0
     decimals: '6',
-    //
-    // symbol: 'USDC',
-    // tokenAddress: '0xe22da380ee6B445bb8273C81944ADEB6E8450422',
-    // aTokenAddress: '0xe12AFeC5aa12Cf614678f9bFeeB98cA9Bb95b5B0',
-    // stableDebtTokenAddress: '0x252C017036b144A812b53BC122d0E67cBB451aD4',
-    // variableDebtTokenAddress: '0xBE9B058a0f2840130372a81eBb3181dcE02BE957',
-    // decimals: '6'
   },
   // {
   //   symbol: 'YFI',

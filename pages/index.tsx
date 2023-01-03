@@ -81,10 +81,12 @@ export default function Home() {
 
       if (stableDebtBalancesPromise.status === 'fulfilled') {
         setStableDebtBalances(stableDebtBalancesPromise.value)
+        console.log("stableDebtBalances>>",stableDebtBalances)
       }
 
       if (variableDebtBalancesPromise.status === 'fulfilled') {
         setVariableDebtBalances(variableDebtBalancesPromise.value)
+        console.log("variableDebtBalances>>",variableDebtBalances)
       }
     },
     [provider]
@@ -149,6 +151,7 @@ export default function Home() {
 
               />
               <DebtBalances
+                refreshTokenBalances={() => getAllBalances(walletSigner)}
                 stableDebtBalances={stableDebtBalances}
                 variableDebtBalances={variableDebtBalances}/>
             </VStack>

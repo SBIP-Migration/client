@@ -9,11 +9,6 @@ type Props = {
   refreshTokenBalances: () => Promise<void>
 }
 
-// I think we should put the stableDebtBalances & variableDebtBalances 
-// in its own container? 
-
-// then handle the "step" logic in "index.tsx" file
-
 export type WrapperTokenType = {
   symbol: string
   contractAddress: string
