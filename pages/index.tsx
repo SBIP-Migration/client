@@ -26,7 +26,8 @@ import {
   getVariableDebtBalances,
 } from '../utils/balances'
 import { ethers } from 'ethers'
-import Step_progess from './stepprogress/step_progress'
+import StepProgress from './stepprogress/stepProgress'
+import DebtBalances from './components/Debtbalances'
 
 const buttonStyles = {
   borderRadius: '6px',
@@ -143,11 +144,16 @@ export default function Home() {
           {wallet && (
             <VStack>
               <Text size="md">Address connected: {walletSigner} </Text>
-              <Step_progess />
+
+              <StepProgress/> 
               <Balances
                 refreshTokenBalances={() => getAllBalances(walletSigner)}
                 aTokenBalances={aTokenBalances}
+
               />
+              <DebtBalances
+                stableDebtBalances={stableDebtBalances}
+                variableDebtBalances={variableDebtBalances}/>
             </VStack>
           )}
           <Modal
