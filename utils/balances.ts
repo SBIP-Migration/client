@@ -14,7 +14,6 @@ const getStableDebtBalances = async (
   }
 
   let stableDebtBalancesList: Array<WrapperTokenType> = []
-  console.log('stableDebtTokenAddress', stableDebtTokenAddresses)
 
   for (let i = 0; i < stableDebtTokenAddresses.length; i++) {
     const tokenContract = new ethers.Contract(
@@ -22,11 +21,9 @@ const getStableDebtBalances = async (
       erc20ABI,
       provider
     )
-    console.log(1)
     const userTokenBalance = (await tokenContract.functions.balanceOf(
       userAddress
     )) as BigNumber
-    console.log(2)
     stableDebtBalancesList.push({
       symbol: `a${TOKEN_LIST[i].symbol}`,
       // stable debt token address
@@ -40,8 +37,6 @@ const getStableDebtBalances = async (
         TOKEN_LIST[i].decimals
       ),
     })
-
-    console.log("tokenContract>>",tokenContract)
   }
 
   return stableDebtBalancesList

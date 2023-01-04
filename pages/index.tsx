@@ -70,10 +70,6 @@ export default function Home() {
         getVariableDebtBalances(provider, address),
       ])
 
-      console.log('stableDebtBalancesPromise', stableDebtBalancesPromise)
-      console.log('variableDebtBalancesPromise', variableDebtBalancesPromise)
-
-      
       if (aTokenBalancesPromise.status === 'fulfilled') {
         setATokenBalances(aTokenBalancesPromise.value)
       }
