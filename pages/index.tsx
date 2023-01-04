@@ -27,24 +27,22 @@ import {
 } from '../utils/balances'
 import { ethers } from 'ethers'
 import StepProgress from '../components/stepprogress/stepProgress'
-import DebtBalances from '../components/Debtbalances'
+import DebtBalances from '../components/DebtBalances'
+import Dashboard from '../components/Dashboard'
 
-const buttonStyles = {
-  borderRadius: '6px',
-  background: '#111827',
-  border: 'none',
-  fontSize: '18px',
-  fontWeight: '600',
-  cursor: 'pointer',
-  color: 'white',
-  padding: '14px 12px',
-  marginTop: '40px',
-  fontFamily: 'inherit',
+export enum StepEnum {
+  APPROVE_A_TOKENS = 1,
+  APPROVE_DEBT_POSITIONS = 2,
+  TRANSFER_TOKENS = 3,
+  COMPLETE = 4,
 }
 
 export default function Home() {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [currentStep, updateCurrentStep] = useState<StepEnum>(
+    StepEnum.APPROVE_A_TOKENS
+  )
 
   const walletSigner = wallet?.accounts?.[0].address
 
@@ -84,6 +82,10 @@ export default function Home() {
     },
     [provider]
   )
+
+  const onRefreshTokenBalances = async () => {
+    await getAllBalances(walletSigner)
+  }
 
   const onDisconnectWallet = useCallback(() => {
     disconnect(wallet)
@@ -130,32 +132,38 @@ export default function Home() {
           height="100%"
           mt="72px"
         >
-          <Heading as="h1" size="lg" textAlign="center">
+          <Heading as="h1" size="lg" textAlign="center" mb="4">
             OmniTransfer - Transfer all your tokens & positions in one click
           </Heading>
           {!wallet && (
-            <Button
-              style={buttonStyles}
-              disabled={connecting}
-              onClick={() => (wallet ? disconnect(wallet) : connect())}
-            >
-              {connecting ? 'Connecting' : 'Connect'}
-            </Button>
+            <Flex height="100%">
+              <Button
+                disabled={connecting}
+                onClick={() => (wallet ? disconnect(wallet) : connect())}
+              >
+                {connecting ? 'Connecting' : 'Connect'}
+              </Button>
+            </Flex>
           )}
           {wallet && (
             <VStack>
               <Text size="md">Address connected: {walletSigner} </Text>
-
-              <StepProgress/> 
-              <Balances
-                refreshTokenBalances={() => getAllBalances(walletSigner)}
-                aTokenBalances={aTokenBalances}
-
+              <StepProgress
+                {...{
+                  currentStep,
+                  updateStep: updateCurrentStep,
+                }}
               />
-              <DebtBalances
-                refreshTokenBalances={() => getAllBalances(walletSigner)}
-                stableDebtBalances={stableDebtBalances}
-                variableDebtBalances={variableDebtBalances}/>
+              <Dashboard
+                {...{
+                  currentStep,
+                  nextStep: () => updateCurrentStep(currentStep + 1),
+                  refreshTokenBalances: onRefreshTokenBalances,
+                  aTokenBalances,
+                  stableDebtBalances,
+                  variableDebtBalances,
+                }}
+              />
             </VStack>
           )}
           <Modal
