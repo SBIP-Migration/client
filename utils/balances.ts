@@ -1,8 +1,8 @@
 import { BigNumber, ethers } from 'ethers'
 import { erc20ABI } from 'wagmi'
 import { AAVE_MIGRATION_CONTRACT } from '../constants'
-import { WrapperTokenType } from '../pages/components/Balances'
-import { TOKEN_LIST } from '../pages/TokenList'
+import { WrapperTokenType } from '../components/Balances'
+import { TOKEN_LIST } from '../data/TokenList'
 
 const getStableDebtBalances = async (
   provider: ethers.providers.Provider,
@@ -11,10 +11,10 @@ const getStableDebtBalances = async (
   const stableDebtTokenAddresses: string[] = []
   for (let i = 0; i < TOKEN_LIST.length; i++) {
     stableDebtTokenAddresses.push(TOKEN_LIST[i].stableDebtTokenAddress)
-    console.log('stableDebtTokenAddresses',stableDebtTokenAddresses)
   }
 
   let stableDebtBalancesList: Array<WrapperTokenType> = []
+  console.log('stableDebtTokenAddress', stableDebtTokenAddresses)
 
   for (let i = 0; i < stableDebtTokenAddresses.length; i++) {
     const tokenContract = new ethers.Contract(
@@ -22,9 +22,11 @@ const getStableDebtBalances = async (
       erc20ABI,
       provider
     )
+    console.log(1)
     const userTokenBalance = (await tokenContract.functions.balanceOf(
       userAddress
     )) as BigNumber
+    console.log(2)
     stableDebtBalancesList.push({
       symbol: `a${TOKEN_LIST[i].symbol}`,
       // stable debt token address

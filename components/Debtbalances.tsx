@@ -1,8 +1,8 @@
 import { BigNumber, ethers } from 'ethers'
 import { Button, Flex, Heading, Text } from '@chakra-ui/react'
 import { useWallets } from '@web3-onboard/react'
-import { approveToken } from '../../utils/ethers'
-import { AAVE_MIGRATION_CONTRACT } from '../../constants'
+import { approveToken } from '../utils/ethers'
+import { AAVE_MIGRATION_CONTRACT } from '../constants'
 import { WrapperTokenType } from './Balances'
 
 type Props = {
@@ -13,13 +13,9 @@ type Props = {
   
   const DebtBalances = ({stableDebtBalances, variableDebtBalances, refreshTokenBalances }: Props) => {
     const [wallet] = useWallets()
-    console.log("wallet",wallet)
-    console.log("variableDebtBalances",variableDebtBalances)
-    console.log("stableDebtBalances",stableDebtBalances)
     const onHandleNext = async () => {
       // Credit Delegation for debt positions
     }
-  
     return (
       <Flex flexDir="column">
         <Flex flexDir="column" justifyContent="center" alignItems="center">

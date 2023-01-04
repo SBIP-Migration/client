@@ -133,15 +133,9 @@ export const TOKEN_LIST: Array<Token> = [
     symbol: 'WETH',
     tokenAddress: '0x2e3A2fb8473316A02b8A297B982498E661E1f6f5',
     aTokenAddress: '0x27B4692C93959048833f40702b22FE3578E77759',
-    stableDebtTokenAddress: '0x1F85D0dc45332D00aead98D26db0735350F80D18',
+    stableDebtTokenAddress: '0xAc4d51461a46E359FBDE603f4183dffFd6Ff562B',
     variableDebtTokenAddress: '0x2b848bA14583fA79519Ee71E7038D0d1061cd0F1',
     decimals: '18',
-    // symbol: 'WETH',
-    // tokenAddress: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
-    // aTokenAddress: '0x87b1f4cf9BD63f7BBD3eE1aD04E8F52540349347',
-    // stableDebtTokenAddress: '0x1F85D0dc45332D00aead98D26db0735350F80D18',
-    // variableDebtTokenAddress: '0xDD13CE9DE795E7faCB6fEC90E346C7F3abe342E2',
-    // decimals: '18'
   },
   {
     symbol: 'USDC',
