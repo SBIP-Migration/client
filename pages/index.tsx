@@ -3,7 +3,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { init, useConnectWallet } from '@web3-onboard/react'
 
-import Balances, { WrapperTokenType } from './components/Balances'
+import Balances, { WrapperTokenType } from '../components/Balances'
 import {
   Button,
   Flex,
@@ -26,8 +26,8 @@ import {
   getVariableDebtBalances,
 } from '../utils/balances'
 import { ethers } from 'ethers'
-import StepProgress from './stepprogress/stepProgress'
-import DebtBalances from './components/Debtbalances'
+import StepProgress from '../components/stepprogress/stepProgress'
+import DebtBalances from '../components/Debtbalances'
 
 const buttonStyles = {
   borderRadius: '6px',
@@ -69,6 +69,7 @@ export default function Home() {
         getStableDebtBalances(provider, address),
         getVariableDebtBalances(provider, address),
       ])
+
       if (aTokenBalancesPromise.status === 'fulfilled') {
         setATokenBalances(aTokenBalancesPromise.value)
       }
@@ -152,6 +153,7 @@ export default function Home() {
 
               />
               <DebtBalances
+                refreshTokenBalances={() => getAllBalances(walletSigner)}
                 stableDebtBalances={stableDebtBalances}
                 variableDebtBalances={variableDebtBalances}/>
             </VStack>

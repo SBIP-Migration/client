@@ -1,18 +1,14 @@
 import { BigNumber, ethers } from 'ethers'
 import { Button, Flex, Heading, Text } from '@chakra-ui/react'
 import { useWallets } from '@web3-onboard/react'
-import { approveToken } from '../../utils/ethers'
-import { AAVE_MIGRATION_CONTRACT } from '../../constants'
+import { approveToken } from '../utils/ethers'
+import { AAVE_MIGRATION_CONTRACT } from '../constants'
 
 type Props = {
   aTokenBalances: WrapperTokenType[]
   refreshTokenBalances: () => Promise<void>
 }
 
-// I think we should put the stableDebtBalances & variableDebtBalances 
-// in its own container? 
-
-// then handle the "step" logic in "index.tsx" file
 
 export type WrapperTokenType = {
   symbol: string

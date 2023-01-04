@@ -133,30 +133,17 @@ export const TOKEN_LIST: Array<Token> = [
     symbol: 'WETH',
     tokenAddress: '0x2e3A2fb8473316A02b8A297B982498E661E1f6f5',
     aTokenAddress: '0x27B4692C93959048833f40702b22FE3578E77759',
-    stableDebtTokenAddress: '0x1F85D0dc45332D00aead98D26db0735350F80D18',
+    stableDebtTokenAddress: '0xAc4d51461a46E359FBDE603f4183dffFd6Ff562B',
     variableDebtTokenAddress: '0x2b848bA14583fA79519Ee71E7038D0d1061cd0F1',
     decimals: '18',
-    // symbol: 'WETH',
-    // tokenAddress: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
-    // aTokenAddress: '0x87b1f4cf9BD63f7BBD3eE1aD04E8F52540349347',
-    // stableDebtTokenAddress: '0x1F85D0dc45332D00aead98D26db0735350F80D18',
-    // variableDebtTokenAddress: '0xDD13CE9DE795E7faCB6fEC90E346C7F3abe342E2',
-    // decimals: '18'
   },
   {
     symbol: 'USDC',
     tokenAddress: '0xA2025B15a1757311bfD68cb14eaeFCc237AF5b43',
     aTokenAddress: '0x1Ee669290939f8a8864497Af3BC83728715265FF',
-    stableDebtTokenAddress: '0xF04958AeA8b7F24Db19772f84d7c2aC801D9Cf8b',
-    variableDebtTokenAddress: '0x3e491EB1A98cD42F9BBa388076Fd7a74B3470CA0', //
+    stableDebtTokenAddress: '0xF04958AeA8b7F24Db19772f84d7c2aC801D9Cf8b', //0xF04958AeA8b7F24Db19772f84d7c2aC801D9Cf8b
+    variableDebtTokenAddress: '0x3e491EB1A98cD42F9BBa388076Fd7a74B3470CA0', //0x3e491EB1A98cD42F9BBa388076Fd7a74B3470CA0
     decimals: '6',
-    //
-    // symbol: 'USDC',
-    // tokenAddress: '0xe22da380ee6B445bb8273C81944ADEB6E8450422',
-    // aTokenAddress: '0xe12AFeC5aa12Cf614678f9bFeeB98cA9Bb95b5B0',
-    // stableDebtTokenAddress: '0x252C017036b144A812b53BC122d0E67cBB451aD4',
-    // variableDebtTokenAddress: '0xBE9B058a0f2840130372a81eBb3181dcE02BE957',
-    // decimals: '6'
   },
   // {
   //   symbol: 'YFI',

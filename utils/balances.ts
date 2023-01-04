@@ -1,8 +1,8 @@
 import { BigNumber, ethers } from 'ethers'
 import { erc20ABI } from 'wagmi'
 import { AAVE_MIGRATION_CONTRACT } from '../constants'
-import { WrapperTokenType } from '../pages/components/Balances'
-import { TOKEN_LIST } from '../pages/TokenList'
+import { WrapperTokenType } from '../components/Balances'
+import { TOKEN_LIST } from '../data/TokenList'
 
 const getStableDebtBalances = async (
   provider: ethers.providers.Provider,
