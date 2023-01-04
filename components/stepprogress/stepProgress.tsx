@@ -1,31 +1,43 @@
-import React, { useState } from "react";
-import StepNavigation from "./stepNavigation";
+import { Box, Button, Flex } from '@chakra-ui/react'
+import React, { useState } from 'react'
+import StepNavigation from './stepNavigation'
 
-export enum Step {
-  CONNECT_WALLET = 0,
-  APPROVE_A_TOKENS = 1,
-  APPROVE_DEBT_POSITIONS = 2,
-  TRANSFER_TOKENS = 3,
-  COMPLETE = 4
+export enum StepEnum {
+  CONNECT_WALLET = 1,
+  APPROVE_A_TOKENS = 2,
+  APPROVE_DEBT_POSITIONS = 3,
+  TRANSFER_TOKENS = 4,
+  COMPLETE = 5,
 }
-
 
 function StepProgress() {
   const labelArray = ['Step 1', 'Step 2', 'Step 3', 'Step 4']
-  const [currentStep, updateCurrentStep] = useState<Step>(Step.CONNECT_WALLET);
+  const [currentStep, updateCurrentStep] = useState<StepEnum>(
+    StepEnum.CONNECT_WALLET
+  )
 
-  function updateStep(step: Step) {
-    updateCurrentStep(step);
+  function updateStep(step: StepEnum) {
+    updateCurrentStep(step)
   }
 
   return (
-    <div className="App">
-      <StepNavigation labelArray={labelArray} currentStep={currentStep} updateStep={updateStep} />
-      <p>Selected Step: {currentStep}</p>
-      <button className="primaryButton" disabled={currentStep === Step.CONNECT_WALLET} onClick={() => updateStep(currentStep - 1)}>Previous Step</button>
-      <button className="primaryButton" disabled={currentStep === Step.TRANSFER_TOKENS} onClick={() => updateStep(currentStep + 1)}>Next Step</button>
-    </div>
-  );
+    <Flex flexDir="column">
+      <StepNavigation
+        labelArray={labelArray}
+        currentStep={currentStep}
+        updateStep={updateStep}
+      />
+      <Box alignSelf="center" mt="4">
+        <Button
+          backgroundColor="red"
+          textColor="white"
+          onClick={() => updateStep(currentStep + 1)}
+        >
+          Next Step
+        </Button>
+      </Box>
+    </Flex>
+  )
 }
 
-export default StepProgress;
+export default StepProgress
