@@ -9,7 +9,6 @@ type Props = {
   refreshTokenBalances: () => Promise<void>
 }
 
-
 export type WrapperTokenType = {
   symbol: string
   contractAddress: string
@@ -22,7 +21,7 @@ export type WrapperTokenType = {
   balanceInTokenDecimals: string
 }
 
-const Balances = ({ aTokenBalances,  refreshTokenBalances }: Props) => {
+const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
   const [wallet] = useWallets()
 
   const onHandleApprove = async (token: WrapperTokenType) => {
@@ -38,13 +37,9 @@ const Balances = ({ aTokenBalances,  refreshTokenBalances }: Props) => {
     await refreshTokenBalances()
   }
 
-  const onHandleNext = async () => {
-    // Credit Delegation for debt positions
-  }
-
   return (
     <Flex flexDir="column">
-      <Text>
+      <Text maxW="500px" textAlign="center" mb="32px">
         Please approve all your Aave positions, so that we can transfer your
         holdings to the intended wallet
       </Text>
@@ -65,8 +60,6 @@ const Balances = ({ aTokenBalances,  refreshTokenBalances }: Props) => {
             </Button>
           </Flex>
         ))}
-
-        <Button onClick={onHandleNext}>Next</Button>
       </Flex>
     </Flex>
   )

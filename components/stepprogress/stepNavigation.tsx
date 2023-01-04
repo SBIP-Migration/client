@@ -1,7 +1,7 @@
 import { Flex } from '@chakra-ui/react'
 import React from 'react'
+import { StepEnum } from '../../pages'
 import Step from './step'
-import { StepEnum as StepEnum } from './stepProgress'
 
 type Props = {
   labelArray: string[]
@@ -11,7 +11,7 @@ type Props = {
 
 export default function StepNavigation(props: Props) {
   return (
-    <Flex>
+    <Flex alignSelf="center">
       {props.labelArray.map((_, index) => (
         <Step
           key={index}

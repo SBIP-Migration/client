@@ -4,7 +4,7 @@ import ConnectWallet from './step1'
 import ApproveLendingPositions from './step2'
 import ApproveDebtPositions from './step3'
 import ExecuteTransfer from './step4'
-import { StepEnum } from './stepProgress'
+import { StepEnum } from '../../pages'
 
 export type StepProps = {
   selected: boolean
@@ -24,9 +24,7 @@ export default function Step(props: StepProps) {
         </div>
         <Flex>
           <Center w="100px" className="stepbox" pt="2.5">
-            {props.index + 1 == StepEnum.CONNECT_WALLET ? (
-              <ConnectWallet />
-            ) : props.index + 1 == StepEnum.APPROVE_A_TOKENS ? (
+            {props.index + 1 == StepEnum.APPROVE_A_TOKENS ? (
               <ApproveLendingPositions />
             ) : props.index + 1 == StepEnum.APPROVE_DEBT_POSITIONS ? (
               <ApproveDebtPositions />
