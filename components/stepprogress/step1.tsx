@@ -5,8 +5,7 @@ export default function Step1(props) {
   return (
     <div className={'stepBlock' + (props.selected ? ' selected' : '')}>
       <Text className="description" textAlign="center">
-        {' '}
-        Connect your Account
+        Connect your Wallet
       </Text>
     </div>
   )

@@ -3,6 +3,7 @@ import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react'
 import { StepEnum } from '../pages'
 import Balances, { WrapperTokenType } from './Balances'
 import DebtBalances from './DebtBalances'
+import ConnectWallet from './ConnectWallet'
 
 type Props = {
   currentStep: StepEnum
@@ -33,6 +34,7 @@ const Dashboard = ({
   return (
     <Flex flexDir="column">
       {{
+        [StepEnum.CONNECT_WALLET]: <ConnectWallet nextStep={nextStep} />,
         [StepEnum.APPROVE_A_TOKENS]: (
           <Balances
             refreshTokenBalances={refreshTokenBalances}
@@ -47,15 +49,18 @@ const Dashboard = ({
           />
         ),
       }[currentStep] ?? null}
-      <Button
-        alignSelf="center"
-        backgroundColor="red"
-        textColor="white"
-        onClick={nextStep}
-        disabled={!isButtonEnabled}
-      >
-        Next
-      </Button>
+      {currentStep != StepEnum.CONNECT_WALLET && (
+        <Button
+          alignSelf="center"
+          backgroundColor="red"
+          textColor="white"
+          onClick={nextStep}
+          mt="5"
+          disabled={!isButtonEnabled}
+        >
+          Next
+        </Button>
+      )}
     </Flex>
   )
 }

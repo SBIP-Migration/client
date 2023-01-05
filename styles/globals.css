@@ -112,7 +112,7 @@ a {
   width: 30px;
   height: 30px;
   line-height: 25px;
-  background-color: green;
+  background-color: red;
   color: white;
   border-radius: 50%;
   border: 1px solid transparent;
@@ -130,7 +130,7 @@ a {
 
 .stepBlock .circleWrapper {
   display: flex;
-  width: 250px;
+  width: 150px;
   justify-content: center;
   padding: 0px 30px;
   position: relative;
@@ -140,7 +140,7 @@ a {
 .selected .circle {
   color: black;
   background-color: white;
-  border-color: green;
+  border-color: red;
 }
 
 .stepBlock:not(:last-child) > .circleWrapper::after {
@@ -150,8 +150,8 @@ a {
   position: absolute;
   top: 0px;
   bottom: 0px;
-  left: 125px;
-  background-color: green;
+  left: 75px;
+  background-color: red;
   margin: auto;
   z-index: -1;
 }

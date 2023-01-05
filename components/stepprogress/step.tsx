@@ -24,12 +24,14 @@ export default function Step(props: StepProps) {
         </Flex>
         <Flex justifyContent="center">
           <Center w="100px" className="stepbox" pt="2.5">
-            {props.index + 1 == StepEnum.APPROVE_A_TOKENS ? (
+            {props.index + 1 == StepEnum.CONNECT_WALLET ? (
+              <ConnectWallet />
+            ) : props.index + 1 == StepEnum.APPROVE_A_TOKENS ? (
               <ApproveLendingPositions />
             ) : props.index + 1 == StepEnum.APPROVE_DEBT_POSITIONS ? (
               <ApproveDebtPositions />
             ) : props.index + 1 == StepEnum.TRANSFER_TOKENS ? (
-              <ExecuteTransfer />
+              <ExecuteTransfer selected={true} />
             ) : null}
           </Center>
         </Flex>

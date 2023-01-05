@@ -9,7 +9,7 @@ type Props = {
 }
 
 function StepProgress({ currentStep, updateStep }: Props) {
-  const labelArray: string[] = ['Step 1', 'Step 2', 'Step 3']
+  const labelArray: string[] = ['Step 1', 'Step 2', 'Step 3', 'Step 4']
 
   return (
     <Flex flexDir="column" alignItems="center">

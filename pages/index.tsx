@@ -32,17 +32,18 @@ import DebtBalances from '../components/DebtBalances'
 import Dashboard from '../components/Dashboard'
 
 export enum StepEnum {
-  APPROVE_A_TOKENS = 1,
-  APPROVE_DEBT_POSITIONS = 2,
-  TRANSFER_TOKENS = 3,
-  COMPLETE = 4,
+  CONNECT_WALLET = 1,
+  APPROVE_A_TOKENS = 2,
+  APPROVE_DEBT_POSITIONS = 3,
+  TRANSFER_TOKENS = 4,
+  COMPLETE = 5,
 }
 
 export default function Home() {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [currentStep, updateCurrentStep] = useState<StepEnum>(
-    StepEnum.APPROVE_A_TOKENS
+    StepEnum.CONNECT_WALLET
   )
 
   const walletSigner = wallet?.accounts?.[0].address
@@ -129,36 +130,28 @@ export default function Home() {
         <Heading as="h1" size="lg" textAlign="center" mb="4" maxW="500px">
           OmniTransfer <br /> Transfer all your tokens & positions in one click
         </Heading>
-        {!wallet ? (
-          <Center height="75%">
-            <Button
-              disabled={connecting}
-              onClick={() => (wallet ? disconnect(wallet) : connect())}
-            >
-              {connecting ? 'Connecting' : 'Connect'}
-            </Button>
-          </Center>
-        ) : (
-          <VStack height="100%" pt="5">
+
+        <VStack height="100%" pt="5">
+          {walletSigner && (
             <Text size="md">Address connected: {walletSigner} </Text>
-            <StepProgress
-              {...{
-                currentStep,
-                updateStep: updateCurrentStep,
-              }}
-            />
-            <Dashboard
-              {...{
-                currentStep,
-                nextStep: () => updateCurrentStep(currentStep + 1),
-                refreshTokenBalances: onRefreshTokenBalances,
-                aTokenBalances,
-                stableDebtBalances,
-                variableDebtBalances,
-              }}
-            />
-          </VStack>
-        )}
+          )}
+          <StepProgress
+            {...{
+              currentStep,
+              updateStep: updateCurrentStep,
+            }}
+          />
+          <Dashboard
+            {...{
+              currentStep,
+              nextStep: () => updateCurrentStep(currentStep + 1),
+              refreshTokenBalances: onRefreshTokenBalances,
+              aTokenBalances,
+              stableDebtBalances,
+              variableDebtBalances,
+            }}
+          />
+        </VStack>
         <Modal
           isOpen={isOpen}
           onClose={onClose}

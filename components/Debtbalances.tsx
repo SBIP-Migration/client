@@ -16,6 +16,8 @@ const DebtBalances = ({
   variableDebtBalances,
   refreshTokenBalances,
 }: Props) => {
+  // Pop up wallet, while keeping tx state
+
   return (
     <Flex flexDir="column" mt="32px">
       <Heading textAlign="center" mb="8px">
@@ -25,11 +27,11 @@ const DebtBalances = ({
         Please delegate all debt positions to the contract to start the transfer
       </Text>
       <Flex flexDir="column" justifyContent="center" alignItems="center">
-        {stableDebtBalances?.map((el) => (
-          <Flex key={el.symbol} alignItems="center" mb="3">
-            <Heading size="sm" mb="3.5">
-              {el.symbol} Stable Debt: {el.balanceInTokenDecimals}
-            </Heading>
+        {stableDebtBalances?.map((debt) => (
+          <Flex key={debt.symbol} alignItems="center" mb="3">
+            <Text size="sm" mb="3.5">
+              {debt.symbol} Stable Debt: {debt.balanceInTokenDecimals}
+            </Text>
             {/* <Button
                 disabled={!!el.allowance.gt(el.balance)}
                 onClick={() => onHandleApprove(el)}
@@ -38,11 +40,11 @@ const DebtBalances = ({
               </Button> */}
           </Flex>
         ))}
-        {variableDebtBalances?.map((el) => (
-          <Flex key={el.symbol} alignItems="center" mb="3">
-            <Heading size="sm" mb="3.5">
-              {el.symbol} Variable Debt: {el.balanceInTokenDecimals}
-            </Heading>
+        {variableDebtBalances?.map((debt) => (
+          <Flex key={debt.symbol} alignItems="center" mb="3">
+            <Text size="sm" mb="3.5">
+              {debt.symbol} Variable Debt: {debt.balanceInTokenDecimals}
+            </Text>
             {/* <Button
                 disabled={!!el.allowance.gt(el.balance)}
                 onClick={() => onHandleApprove(el)}
