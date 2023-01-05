@@ -12,7 +12,7 @@ function StepProgress({ currentStep, updateStep }: Props) {
   const labelArray: string[] = ['Step 1', 'Step 2', 'Step 3']
 
   return (
-    <Flex flexDir="column">
+    <Flex flexDir="column" alignItems="center">
       <StepNavigation
         {...{
           labelArray,

@@ -18,6 +18,7 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  Center,
 } from '@chakra-ui/react'
 import { getWeb3Provider } from '../utils/ethers'
 import {
@@ -115,87 +116,78 @@ export default function Home() {
   }, [walletSigner, getAllBalances, provider])
 
   return (
-    <Flex flexDir="column">
-      <div className={styles.container}>
-        <Head>
-          <title>OmniTransfer</title>
-          <meta
-            name="description"
-            content="Migrate your Aave positions to another wallet"
-          />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <Flex
-          flexDir="column"
-          justifyContent="center"
-          alignItems="center"
-          height="100%"
-          mt="72px"
+    <Flex flexDir="column" height="100vh">
+      <Head>
+        <title>OmniTransfer</title>
+        <meta
+          name="description"
+          content="Migrate your Aave positions to another wallet"
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <Flex flexDir="column" alignItems="center" height="100%" mt="72px">
+        <Heading as="h1" size="lg" textAlign="center" mb="4" maxW="500px">
+          OmniTransfer <br /> Transfer all your tokens & positions in one click
+        </Heading>
+        {!wallet ? (
+          <Center height="75%">
+            <Button
+              disabled={connecting}
+              onClick={() => (wallet ? disconnect(wallet) : connect())}
+            >
+              {connecting ? 'Connecting' : 'Connect'}
+            </Button>
+          </Center>
+        ) : (
+          <VStack height="100%" pt="5">
+            <Text size="md">Address connected: {walletSigner} </Text>
+            <StepProgress
+              {...{
+                currentStep,
+                updateStep: updateCurrentStep,
+              }}
+            />
+            <Dashboard
+              {...{
+                currentStep,
+                nextStep: () => updateCurrentStep(currentStep + 1),
+                refreshTokenBalances: onRefreshTokenBalances,
+                aTokenBalances,
+                stableDebtBalances,
+                variableDebtBalances,
+              }}
+            />
+          </VStack>
+        )}
+        <Modal
+          isOpen={isOpen}
+          onClose={onClose}
+          closeOnEsc={false}
+          closeOnOverlayClick={false}
         >
-          <Heading as="h1" size="lg" textAlign="center" mb="4">
-            OmniTransfer - Transfer all your tokens & positions in one click
-          </Heading>
-          {!wallet && (
-            <Flex height="100%">
-              <Button
-                disabled={connecting}
-                onClick={() => (wallet ? disconnect(wallet) : connect())}
-              >
-                {connecting ? 'Connecting' : 'Connect'}
-              </Button>
-            </Flex>
-          )}
-          {wallet && (
-            <VStack>
-              <Text size="md">Address connected: {walletSigner} </Text>
-              <StepProgress
-                {...{
-                  currentStep,
-                  updateStep: updateCurrentStep,
-                }}
-              />
-              <Dashboard
-                {...{
-                  currentStep,
-                  nextStep: () => updateCurrentStep(currentStep + 1),
-                  refreshTokenBalances: onRefreshTokenBalances,
-                  aTokenBalances,
-                  stableDebtBalances,
-                  variableDebtBalances,
-                }}
-              />
-            </VStack>
-          )}
-          <Modal
-            isOpen={isOpen}
-            onClose={onClose}
-            closeOnEsc={false}
-            closeOnOverlayClick={false}
-          >
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Switch Wallet</ModalHeader>
-              <ModalBody>
-                <Text textAlign="center">
-                  Disconnect current wallet, and connect the recipient wallet to
-                  approve the credit delegation for the incoming debt tokens
-                </Text>
-              </ModalBody>
-              <ModalFooter>
-                {wallet ? (
-                  <Button colorScheme="blue" onClick={onDisconnectWallet}>
-                    Disconnect Wallet
-                  </Button>
-                ) : (
-                  <Button colorScheme="blue" onClick={onConnectRecipientWallet}>
-                    Connect Recipient Wallet
-                  </Button>
-                )}
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-        </Flex>
-      </div>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Switch Wallet</ModalHeader>
+            <ModalBody>
+              <Text textAlign="center">
+                Disconnect current wallet, and connect the recipient wallet to
+                approve the credit delegation for the incoming debt tokens
+              </Text>
+            </ModalBody>
+            <ModalFooter>
+              {wallet ? (
+                <Button colorScheme="blue" onClick={onDisconnectWallet}>
+                  Disconnect Wallet
+                </Button>
+              ) : (
+                <Button colorScheme="blue" onClick={onConnectRecipientWallet}>
+                  Connect Recipient Wallet
+                </Button>
+              )}
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Flex>
     </Flex>
   )
 }

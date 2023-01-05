@@ -106,15 +106,11 @@ a {
   }
 }
 
-
-/* {} */
-
-
 .circle {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   width: 30px;
-  height: 29px;
+  height: 30px;
   line-height: 25px;
   background-color: green;
   color: white;
@@ -134,18 +130,12 @@ a {
 
 .stepBlock .circleWrapper {
   display: flex;
-  width: 170px;
-  /* margin-right: 10px; */
-  /* justify-items: ; */
+  width: 250px;
+  justify-content: center;
   padding: 0px 30px;
   position: relative;
 }
-.stepbox{
-  /* margin-right: 30px; */
-  display: flex;
-  /* width: 100px; */
-  /* justify-content: space-around */
-}
+
 
 .selected .circle {
   color: black;
@@ -160,6 +150,7 @@ a {
   position: absolute;
   top: 0px;
   bottom: 0px;
+  left: 125px;
   background-color: green;
   margin: auto;
   z-index: -1;
@@ -172,18 +163,4 @@ a {
 .stepBlock:not(:last-child).selected > .circleWrapper::after, .stepBlock:not(:last-child).selected ~ .stepBlock:not(:last-child) > .circleWrapper::after {
   height: 2px;
   opacity: 0.6;
-}
-
-.primaryButton {
-  padding: 10px 25px;
-  background-color: green;
-  border: none;
-  margin: 10px;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.primaryButton:disabled {
-  opacity: 0.5;
 }

@@ -11,7 +11,7 @@ type Props = {
 
 export default function StepNavigation(props: Props) {
   return (
-    <Flex alignSelf="center">
+    <Flex>
       {props.labelArray.map((_, index) => (
         <Step
           key={index}

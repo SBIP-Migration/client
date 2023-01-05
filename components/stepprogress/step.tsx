@@ -16,13 +16,13 @@ export default function Step(props: StepProps) {
   return (
     <>
       <div className={'stepBlock' + (props.selected ? ' selected' : '')}>
-        <div
+        <Flex
           className="circleWrapper"
           onClick={() => props.updateStep(props.index + 1)}
         >
-          <div className="circle">{props.index + 1}</div>
-        </div>
-        <Flex>
+          <Flex className="circle">{props.index + 1}</Flex>
+        </Flex>
+        <Flex justifyContent="center">
           <Center w="100px" className="stepbox" pt="2.5">
             {props.index + 1 == StepEnum.APPROVE_A_TOKENS ? (
               <ApproveLendingPositions />
