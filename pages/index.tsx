@@ -39,8 +39,7 @@ export enum StepEnum {
 }
 
 export default function Home() {
-  const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [{ wallet }] = useConnectWallet()
   const [currentStep, updateCurrentStep] = useState<StepEnum>(
     StepEnum.CONNECT_WALLET
   )
@@ -87,20 +86,6 @@ export default function Home() {
   const onRefreshTokenBalances = async () => {
     await getAllBalances(walletSigner)
   }
-
-  const onDisconnectWallet = useCallback(() => {
-    disconnect(wallet)
-  }, [disconnect, wallet])
-
-  const onConnectRecipientWallet = useCallback(() => {
-    connect()
-    onClose()
-  }, [connect, onClose])
-
-  // Call this function, when we want to switch wallets
-  const onSwitchWallet = useCallback(() => {
-    onOpen()
-  }, [onOpen])
 
   useEffect(() => {
     if (!wallet) return
@@ -151,34 +136,6 @@ export default function Home() {
             }}
           />
         </VStack>
-        <Modal
-          isOpen={isOpen}
-          onClose={onClose}
-          closeOnEsc={false}
-          closeOnOverlayClick={false}
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Switch Wallet</ModalHeader>
-            <ModalBody>
-              <Text textAlign="center">
-                Disconnect current wallet, and connect the recipient wallet to
-                approve the credit delegation for the incoming debt tokens
-              </Text>
-            </ModalBody>
-            <ModalFooter>
-              {wallet ? (
-                <Button colorScheme="blue" onClick={onDisconnectWallet}>
-                  Disconnect Wallet
-                </Button>
-              ) : (
-                <Button colorScheme="blue" onClick={onConnectRecipientWallet}>
-                  Connect Recipient Wallet
-                </Button>
-              )}
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
       </Flex>
     </Flex>
   )

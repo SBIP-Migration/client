@@ -24,7 +24,10 @@ const Dashboard = ({
 }: Props) => {
   const isButtonEnabled = useMemo(() => {
     if (currentStep === StepEnum.APPROVE_A_TOKENS) {
-      return aTokenBalances.every((token) => token.allowance.gte(token.balance))
+      return (
+        aTokenBalances.length > 0 &&
+        aTokenBalances.every((token) => token.allowance.gte(token.balance))
+      )
     }
 
     // TODO: Add logic for debt positions

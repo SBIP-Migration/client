@@ -21,19 +21,22 @@ const getStableDebtBalances = async (
       erc20ABI,
       provider
     )
-    const userTokenBalance = (await tokenContract.functions.balanceOf(
+    const userTokenBalances = (await tokenContract.functions.balanceOf(
       userAddress
-    )) as BigNumber
+    )) as BigNumber[]
+
+    const tokenBalance = userTokenBalances?.[0]
+
     stableDebtBalancesList.push({
       symbol: `a${TOKEN_LIST[i].symbol}`,
       // stable debt token address
       contractAddress: TOKEN_LIST[i].stableDebtTokenAddress,
       // underlying token address
       tokenAddress: TOKEN_LIST[i].tokenAddress,
-      balance: userTokenBalance,
+      balance: tokenBalance,
       allowance: BigNumber.from(0),
       balanceInTokenDecimals: ethers.utils.formatUnits(
-        userTokenBalance.toString(),
+        tokenBalance.toString(),
         TOKEN_LIST[i].decimals
       ),
     })
@@ -60,9 +63,11 @@ const getVariableDebtBalances = async (
       erc20ABI,
       provider
     )
-    const userTokenBalance = (await tokenContract.functions.balanceOf(
+    const userTokenBalances = (await tokenContract.functions.balanceOf(
       userAddress
-    )) as BigNumber
+    )) as BigNumber[]
+
+    const tokenBalance = userTokenBalances?.[0]
 
     variableDebtBalancesList.push({
       symbol: `a${TOKEN_LIST[i].symbol}`,
@@ -70,10 +75,10 @@ const getVariableDebtBalances = async (
       contractAddress: TOKEN_LIST[i].variableDebtTokenAddress,
       // underlying token address
       tokenAddress: TOKEN_LIST[i].tokenAddress,
-      balance: userTokenBalance,
+      balance: tokenBalance,
       allowance: BigNumber.from(0),
       balanceInTokenDecimals: ethers.utils.formatUnits(
-        userTokenBalance.toString(),
+        tokenBalance.toString(),
         TOKEN_LIST[i].decimals
       ),
     })
