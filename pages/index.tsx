@@ -27,8 +27,7 @@ import {
   getVariableDebtBalances,
 } from '../utils/balances'
 import { ethers } from 'ethers'
-import StepProgress from '../components/stepprogress/stepProgress'
-import DebtBalances from '../components/DebtBalances'
+import StepProgress from '../components/step-progress/stepProgress'
 import Dashboard from '../components/Dashboard'
 
 export enum StepEnum {
