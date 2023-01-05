@@ -132,9 +132,10 @@ export default function Home() {
           height="100%"
           mt="72px"
         >
-          <Heading as="h1" size="lg" textAlign="center" mb="4">
-            OmniTransfer - Transfer all your tokens & positions in one click
-          </Heading>
+          <h1 className='pixel_font'  style={{ fontSize: 60 }}>
+            OmniTransfer
+          </h1>
+          <h1 className='pixel_font' style={{ fontSize: 30 }}>Transfer all your tokens & positions in one click</h1>
           {!wallet && (
             <Flex height="100%">
               <Button
