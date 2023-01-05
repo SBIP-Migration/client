@@ -22,13 +22,15 @@ import { useCallback, useMemo } from 'react'
 type Props = {
   stableDebtBalances: WrapperTokenType[]
   variableDebtBalances: WrapperTokenType[]
-  refreshTokenBalances: () => Promise<void>
+  approvedCreditDelegationAddresses: string[]
+  addApprovedCreditDelegationAddress: (address: string) => void
 }
 
 const DebtBalances = ({
   stableDebtBalances,
   variableDebtBalances,
-  refreshTokenBalances,
+  approvedCreditDelegationAddresses,
+  addApprovedCreditDelegationAddress,
 }: Props) => {
   // Pop up wallet, while keeping tx state
   const { isOpen, onClose, onOpen } = useDisclosure()
@@ -53,16 +55,18 @@ const DebtBalances = ({
   }, [prevWallet, wallet?.accounts])
 
   const onHandleApprove = useCallback(
-    (debt: WrapperTokenType) => {
+    async (debtTokenBalance: WrapperTokenType) => {
       if (!wallet) return
-      approveCreditDelegation(
+      const tx = await approveCreditDelegation(
         wallet,
-        debt.contractAddress,
+        debtTokenBalance.contractAddress,
         AAVE_MIGRATION_CONTRACT,
-        debt.balance
+        debtTokenBalance.balance
       )
+      await tx.wait()
+      addApprovedCreditDelegationAddress(debtTokenBalance.contractAddress)
     },
-    [wallet]
+    [addApprovedCreditDelegationAddress, wallet]
   )
 
   return (
@@ -73,13 +77,11 @@ const DebtBalances = ({
       <Text mb="28px">
         Please delegate all debt positions to the contract to start the transfer
       </Text>
-      {isOldWallet && (
-        <Center mb="24px">
-          <Button onClick={onOpen} alignSelf="center">
-            Switch to recipient wallet
-          </Button>
-        </Center>
-      )}
+      <Center mb="24px">
+        <Button onClick={onOpen} alignSelf="center">
+          Switch to recipient wallet
+        </Button>
+      </Center>
       <Flex flexDir="column" justifyContent="center" alignItems="center">
         {stableDebtBalances
           ?.filter((debt) => debt?.balance?.gt(0))
@@ -89,7 +91,18 @@ const DebtBalances = ({
                 {debt.symbol} Stable Debt: {debt.balanceInTokenDecimals}
               </Text>
               {!isOldWallet && (
-                <Button onClick={() => onHandleApprove(debt)}>Approve</Button>
+                <Button
+                  isDisabled={approvedCreditDelegationAddresses
+                    .map((addr) => addr.toLowerCase())
+                    .includes(debt.contractAddress.toLowerCase())}
+                  onClick={() => onHandleApprove(debt)}
+                >
+                  {approvedCreditDelegationAddresses
+                    .map((addr) => addr.toLowerCase())
+                    .includes(debt.contractAddress.toLowerCase())
+                    ? 'Approved'
+                    : 'Approve'}
+                </Button>
               )}
             </Flex>
           ))}
@@ -101,7 +114,18 @@ const DebtBalances = ({
                 {debt.symbol} Variable Debt: {debt.balanceInTokenDecimals}
               </Text>
               {!isOldWallet && (
-                <Button onClick={() => onHandleApprove(debt)}>Approve</Button>
+                <Button
+                  isDisabled={approvedCreditDelegationAddresses
+                    .map((addr) => addr.toLowerCase())
+                    .includes(debt.contractAddress.toLowerCase())}
+                  onClick={() => onHandleApprove(debt)}
+                >
+                  {approvedCreditDelegationAddresses
+                    .map((addr) => addr.toLowerCase())
+                    .includes(debt.contractAddress.toLowerCase())
+                    ? 'Approved'
+                    : 'Approve'}
+                </Button>
               )}
             </Flex>
           ))}

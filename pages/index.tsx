@@ -1,25 +1,10 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { init, useConnectWallet } from '@web3-onboard/react'
 
 import Balances, { WrapperTokenType } from '../components/Balances'
-import {
-  Button,
-  Flex,
-  Heading,
-  Text,
-  VStack,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  Center,
-} from '@chakra-ui/react'
+import { Button, Flex, Heading, Text, VStack } from '@chakra-ui/react'
 import { getWeb3Provider } from '../utils/ethers'
 import {
   getATokenBalances,
@@ -43,6 +28,7 @@ export default function Home() {
   const [currentStep, updateCurrentStep] = useState<StepEnum>(
     StepEnum.CONNECT_WALLET
   )
+  const hasWalletBeenConnectedBeforeRef = useRef<boolean>()
 
   const walletSigner = wallet?.accounts?.[0].address
 
@@ -94,8 +80,14 @@ export default function Home() {
 
   useEffect(() => {
     ;(async () => {
-      if (walletSigner?.length && provider != null) {
+      if (
+        walletSigner?.length &&
+        provider != null &&
+        // Don't fetch all balances for recipient wallet
+        hasWalletBeenConnectedBeforeRef.current === undefined
+      ) {
         await getAllBalances(walletSigner)
+        hasWalletBeenConnectedBeforeRef.current = true
       }
     })()
   }, [walletSigner, getAllBalances, provider])

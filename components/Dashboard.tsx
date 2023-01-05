@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react'
 import { StepEnum } from '../pages'
 import Balances, { WrapperTokenType } from './Balances'
@@ -22,6 +22,11 @@ const Dashboard = ({
   stableDebtBalances,
   variableDebtBalances,
 }: Props) => {
+  const [
+    approvedCreditDelegationAddresses,
+    setApprovedCreditDelegationAddresses,
+  ] = useState<string[]>([])
+
   const isButtonEnabled = useMemo(() => {
     if (currentStep === StepEnum.APPROVE_A_TOKENS) {
       return (
@@ -30,9 +35,39 @@ const Dashboard = ({
       )
     }
 
+    if (currentStep === StepEnum.APPROVE_DEBT_POSITIONS) {
+      const numStableDebt = stableDebtBalances.filter((bal) =>
+        bal.balance.gt(0)
+      ).length
+      const numVariableDebt = variableDebtBalances.filter((bal) =>
+        bal.balance.gt(0)
+      ).length
+
+      return (
+        numStableDebt + numVariableDebt >=
+        approvedCreditDelegationAddresses.length
+      )
+    }
+
     // TODO: Add logic for debt positions
     return false
-  }, [aTokenBalances, currentStep])
+  }, [
+    aTokenBalances,
+    approvedCreditDelegationAddresses.length,
+    currentStep,
+    stableDebtBalances,
+    variableDebtBalances,
+  ])
+
+  const addApprovedCreditDelegationAddress = useCallback(
+    (contractAddress: string) => {
+      setApprovedCreditDelegationAddresses((addresses) => [
+        ...addresses,
+        contractAddress,
+      ])
+    },
+    []
+  )
 
   return (
     <Flex flexDir="column">
@@ -46,9 +81,14 @@ const Dashboard = ({
         ),
         [StepEnum.APPROVE_DEBT_POSITIONS]: (
           <DebtBalances
-            refreshTokenBalances={refreshTokenBalances}
             stableDebtBalances={stableDebtBalances}
             variableDebtBalances={variableDebtBalances}
+            addApprovedCreditDelegationAddress={
+              addApprovedCreditDelegationAddress
+            }
+            approvedCreditDelegationAddresses={
+              approvedCreditDelegationAddresses
+            }
           />
         ),
       }[currentStep] ?? null}
