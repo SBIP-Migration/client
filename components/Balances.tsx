@@ -38,25 +38,27 @@ const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
   }
 
   return (
-    <Flex flexDir="column">
-      <Text maxW="500px" textAlign="center" mb="32px">
-        Please approve all your Aave positions, so that we can transfer your
-        holdings to the intended wallet
-      </Text>
+    <Flex flexDir="column" mt="7">
+      <Heading size="md" mb="3.5" textAlign="center">
+        Your AAVE balances here:
+      </Heading>
       <Flex flexDir="column" justifyContent="center" alignItems="center">
-        <Heading size="md" mb="3.5">
-          Your AAVE balances here:
-        </Heading>
-        {aTokenBalances.map((el) => (
-          <Flex key={el.symbol} alignItems="center" mb="3">
+        <Text maxW="450px" textAlign="center" mb="32px">
+          Please approve all your Aave positions, so that we can transfer your
+          holdings to the intended wallet
+        </Text>
+        {aTokenBalances.map((aTokenBalance) => (
+          <Flex key={aTokenBalance.symbol} alignItems="center" mb="3">
             <Text mr="3">
-              {el.symbol}: {el.balanceInTokenDecimals}{' '}
+              {aTokenBalance.symbol}: {aTokenBalance.balanceInTokenDecimals}{' '}
             </Text>
             <Button
-              disabled={!!el.allowance.gt(el.balance)}
-              onClick={() => onHandleApprove(el)}
+              disabled={!!aTokenBalance.allowance.gt(aTokenBalance.balance)}
+              onClick={() => onHandleApprove(aTokenBalance)}
             >
-              {el.allowance.gt(el.balance) ? 'Approved' : 'Approve'}
+              {aTokenBalance.allowance.gt(aTokenBalance.balance)
+                ? 'Approved'
+                : 'Approve'}
             </Button>
           </Flex>
         ))}

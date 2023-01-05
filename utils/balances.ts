@@ -18,22 +18,33 @@ const getStableDebtBalances = async (
   for (let i = 0; i < stableDebtTokenAddresses.length; i++) {
     const tokenContract = new ethers.Contract(
       stableDebtTokenAddresses[i],
-      erc20ABI,
+      [
+        ...erc20ABI,
+        'function borrowAllowance(address fromUser, address toUser) external view returns (uint256)',
+      ],
       provider
     )
-    const userTokenBalance = (await tokenContract.functions.balanceOf(
+    const userTokenBalances = (await tokenContract.functions.balanceOf(
       userAddress
+    )) as BigNumber[]
+
+    const tokenBalance = userTokenBalances?.[0]
+
+    const contractTokenAllowance = (await tokenContract.borrowAllowance(
+      userAddress,
+      AAVE_MIGRATION_CONTRACT
     )) as BigNumber
+
     stableDebtBalancesList.push({
       symbol: `a${TOKEN_LIST[i].symbol}`,
       // stable debt token address
       contractAddress: TOKEN_LIST[i].stableDebtTokenAddress,
       // underlying token address
       tokenAddress: TOKEN_LIST[i].tokenAddress,
-      balance: userTokenBalance,
-      allowance: BigNumber.from(0),
+      balance: tokenBalance,
+      allowance: contractTokenAllowance,
       balanceInTokenDecimals: ethers.utils.formatUnits(
-        userTokenBalance.toString(),
+        tokenBalance.toString(),
         TOKEN_LIST[i].decimals
       ),
     })
@@ -57,11 +68,21 @@ const getVariableDebtBalances = async (
   for (let i = 0; i < variableDebtTokenAddresses.length; i++) {
     const tokenContract = new ethers.Contract(
       variableDebtTokenAddresses[i],
-      erc20ABI,
+      [
+        ...erc20ABI,
+        'function borrowAllowance(address fromUser, address toUser) external view returns (uint256)',
+      ],
       provider
     )
-    const userTokenBalance = (await tokenContract.functions.balanceOf(
+    const userTokenBalances = (await tokenContract.functions.balanceOf(
       userAddress
+    )) as BigNumber[]
+
+    const tokenBalance = userTokenBalances?.[0]
+
+    const contractTokenAllowance = (await tokenContract.borrowAllowance(
+      userAddress,
+      AAVE_MIGRATION_CONTRACT
     )) as BigNumber
 
     variableDebtBalancesList.push({
@@ -70,10 +91,10 @@ const getVariableDebtBalances = async (
       contractAddress: TOKEN_LIST[i].variableDebtTokenAddress,
       // underlying token address
       tokenAddress: TOKEN_LIST[i].tokenAddress,
-      balance: userTokenBalance,
-      allowance: BigNumber.from(0),
+      balance: tokenBalance,
+      allowance: contractTokenAllowance,
       balanceInTokenDecimals: ethers.utils.formatUnits(
-        userTokenBalance.toString(),
+        tokenBalance.toString(),
         TOKEN_LIST[i].decimals
       ),
     })
