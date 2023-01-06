@@ -47,21 +47,23 @@ const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
           Please approve all your Aave positions, so that we can transfer your
           holdings to the intended wallet
         </Text>
-        {aTokenBalances.map((aTokenBalance) => (
-          <Flex key={aTokenBalance.symbol} alignItems="center" mb="3">
-            <Text mr="3">
-              {aTokenBalance.symbol}: {aTokenBalance.balanceInTokenDecimals}{' '}
-            </Text>
-            <Button
-              disabled={!!aTokenBalance.allowance.gt(aTokenBalance.balance)}
-              onClick={() => onHandleApprove(aTokenBalance)}
-            >
-              {aTokenBalance.allowance.gt(aTokenBalance.balance)
-                ? 'Approved'
-                : 'Approve'}
-            </Button>
-          </Flex>
-        ))}
+        {aTokenBalances
+          .filter((bal) => bal.balance.gt(0))
+          .map((aTokenBalance) => (
+            <Flex key={aTokenBalance.symbol} alignItems="center" mb="3">
+              <Text mr="3">
+                {aTokenBalance.symbol}: {aTokenBalance.balanceInTokenDecimals}{' '}
+              </Text>
+              <Button
+                disabled={!!aTokenBalance.allowance.gt(aTokenBalance.balance)}
+                onClick={() => onHandleApprove(aTokenBalance)}
+              >
+                {aTokenBalance.allowance.gt(aTokenBalance.balance)
+                  ? 'Approved'
+                  : 'Approve'}
+              </Button>
+            </Flex>
+          ))}
       </Flex>
     </Flex>
   )

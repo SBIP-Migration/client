@@ -92,6 +92,12 @@ export default function Home() {
     })()
   }, [walletSigner, getAllBalances, provider])
 
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem('recipient')
+    }
+  }, [])
+
   return (
     <Flex flexDir="column" height="100vh">
       <Head>

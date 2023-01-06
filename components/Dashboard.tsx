@@ -2,8 +2,9 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react'
 import { StepEnum } from '../pages'
 import Balances, { WrapperTokenType } from './Balances'
-import DebtBalances from './DebtBalances'
+import DebtBalances from './Debtbalances'
 import ConnectWallet from './ConnectWallet'
+import ExecuteTransfer from './ExecuteTransfer'
 
 type Props = {
   currentStep: StepEnum
@@ -91,19 +92,27 @@ const Dashboard = ({
             }
           />
         ),
+        [StepEnum.TRANSFER_TOKENS]: (
+          <ExecuteTransfer
+            stableDebtBalances={stableDebtBalances}
+            variableDebtBalances={variableDebtBalances}
+            aTokenBalances={aTokenBalances}
+          />
+        ),
       }[currentStep] ?? null}
-      {currentStep != StepEnum.CONNECT_WALLET && (
-        <Button
-          alignSelf="center"
-          backgroundColor="red"
-          textColor="white"
-          onClick={nextStep}
-          mt="5"
-          disabled={!isButtonEnabled}
-        >
-          Next
-        </Button>
-      )}
+      {currentStep != StepEnum.CONNECT_WALLET &&
+        currentStep != StepEnum.TRANSFER_TOKENS && (
+          <Button
+            alignSelf="center"
+            backgroundColor="red"
+            textColor="white"
+            onClick={nextStep}
+            mt="5"
+            disabled={!isButtonEnabled}
+          >
+            Next
+          </Button>
+        )}
     </Flex>
   )
 }
