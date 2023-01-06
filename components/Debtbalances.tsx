@@ -17,7 +17,7 @@ import { useConnectWallet, useWallets } from '@web3-onboard/react'
 import { approveCreditDelegation } from '../utils/ethers'
 import { AAVE_MIGRATION_CONTRACT } from '../constants'
 import { WrapperTokenType } from './Balances'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 type Props = {
   stableDebtBalances: WrapperTokenType[]
@@ -38,13 +38,19 @@ const DebtBalances = ({
   const prevWallet = usePrevious(wallet)
 
   const onDisconnectWallet = useCallback(async () => {
+    localStorage.setItem('sender', wallet.accounts?.[0]?.address)
     await disconnect(wallet)
   }, [disconnect, wallet])
 
-  const onConnectRecipientWallet = useCallback(() => {
-    connect()
+  const onConnectRecipientWallet = useCallback(async () => {
     onClose()
+    connect()
   }, [connect, onClose])
+
+  useEffect(() => {
+    if (!wallet || !wallet.accounts?.[0]?.address) return
+    localStorage.setItem('recipient', wallet?.accounts?.[0]?.address)
+  }, [wallet])
 
   const isOldWallet = useMemo(() => {
     return (
@@ -133,8 +139,8 @@ const DebtBalances = ({
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        closeOnEsc={false}
         closeOnOverlayClick={false}
+        isCentered={true}
       >
         <ModalOverlay />
         <ModalContent>
@@ -143,7 +149,7 @@ const DebtBalances = ({
             <Text textAlign="center">
               {wallet
                 ? 'Disconnect current wallet (may need to do it manually too with your wallet provider)'
-                : 'Connect your new wallet'}
+                : 'Connect your new wallet (make sure you have disconnected manually if you are on Metamask)'}
             </Text>
           </ModalBody>
           <ModalFooter>

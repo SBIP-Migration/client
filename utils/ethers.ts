@@ -1,6 +1,20 @@
 import { WalletState } from '@web3-onboard/core'
 import { BigNumber, ethers } from 'ethers'
 import { erc20ABI } from 'wagmi'
+import flashLoanABI from '../abi/flashLoan.json'
+import { AAVE_MIGRATION_CONTRACT } from '../constants'
+
+export type DebtTokenPosition = {
+  stableDebtAmount: string
+  variableDebtAmount: string
+  tokenAddress: string
+}
+
+export type aTokenPosition = {
+  tokenAddress: string
+  amount: string
+  aTokenAddress: string
+}
 
 let provider: ethers.providers.Web3Provider
 
@@ -55,4 +69,38 @@ const approveToken = async (
   return erc20Contract.functions.approve(contractAddress, amount)
 }
 
-export { getWeb3Provider, approveToken, approveCreditDelegation }
+const executeMigration = async (
+  wallet: WalletState,
+  recipientAddress: string,
+  debtTokenPositions: DebtTokenPosition[],
+  aTokenPositions: aTokenPosition[]
+) => {
+  const provider = getWeb3Provider(wallet)
+  const signer = provider.getSigner()
+
+  if (!signer) {
+    throw new Error('No signer')
+  }
+
+  const flashLoanContract = new ethers.Contract(
+    AAVE_MIGRATION_CONTRACT,
+    flashLoanABI,
+    signer
+  )
+
+  return flashLoanContract.migrateAavePositions(
+    recipientAddress,
+    debtTokenPositions,
+    aTokenPositions,
+    {
+      gasLimit: BigNumber.from(1_500_000),
+    }
+  )
+}
+
+export {
+  getWeb3Provider,
+  approveToken,
+  approveCreditDelegation,
+  executeMigration,
+}
