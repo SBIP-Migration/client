@@ -58,7 +58,7 @@ const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
               >
                 <GridItem colStart={1} colEnd={2} h="0" >
                 <Text mr="3">
-                  {aTokenBalance.symbol}: {aTokenBalance.balanceInTokenDecimals}{' '}
+                  <b>{aTokenBalance.symbol}: </b>{aTokenBalance.balanceInTokenDecimals}{' '}
                 </Text>{' '}
                 </GridItem>
                 <GridItem colStart={4} colEnd={8} h="12"  >
