@@ -1,8 +1,9 @@
 import '../styles/globals.css'
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, Container, Heading , Text,Stack } from '@chakra-ui/react'
 import theme from '../theme'
 import { init } from '@web3-onboard/react'
 import injectedModule from '@web3-onboard/injected-wallets'
+import Fonts from '../styles/fonts'
 
 const injected = injectedModule()
 
@@ -20,6 +21,7 @@ init({
 
 export default function App({ Component, pageProps }) {
   return (
+
     <ChakraProvider {...{ theme }}>
       <Component {...pageProps} />
     </ChakraProvider>
