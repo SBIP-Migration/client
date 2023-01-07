@@ -39,10 +39,10 @@ const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
 
   return (
     <Flex flexDir="column" mt="7">
-      <Heading size="md" mb="3.5" textAlign="center">
+      <Heading  className='pixel_font'size="md" mb="3.5" textAlign="center"   style={{ fontSize: 25 }}>
         Your AAVE balances here:
       </Heading>
-      <Text maxW="450px" textAlign="center" mb="32px">
+      <Text maxW="450px" textAlign="center" mb="32px" backgroundColor='white' opacity='0.9' borderRadius='10px'  ml='5'>
         Please approve all your Aave positions, so that we can transfer your
         holdings to the intended wallet
       </Text>
@@ -55,7 +55,8 @@ const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
                 border="1px"
                 borderRadius="10px"
                 padding="20px"
-                // alignContent='cente'
+                backgroundColor='white'
+                opacity='0.9'
               >
         {aTokenBalances
           .filter((bal) => bal.balance.gt(0))

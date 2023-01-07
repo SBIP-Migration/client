@@ -83,7 +83,7 @@ const DebtBalances = ({
       <Heading textAlign="center" mb="8px">
         Debt Positions
       </Heading>
-      <Text mb="28px" ml="5">
+      <Text mb="28px" ml="5" backgroundColor='white' opacity='0.9' borderRadius='10px' padding='10px'>
         Please delegate all debt positions to the contract to start the transfer
       </Text>
       <Center mb="24px">
@@ -91,7 +91,7 @@ const DebtBalances = ({
           Switch to recipient wallet
         </Button>
       </Center>
-      <Flex flexDir="column" justifyContent="center" alignItems="left" ml="30">
+      <Flex flexDir="column" justifyContent="center" alignItems="left" ml="30" >
         <Grid
           templateColumns={'100px repeat(2, 1fr)'}
           gridTemplateRows={'50px repeat(3, 1fr) 30px'}
@@ -100,6 +100,7 @@ const DebtBalances = ({
           borderRadius="10px"
           padding="10px"
           mb='10px'
+          backgroundColor='white' opacity='0.9'
         >
           <GridItem rowSpan={1} colSpan={1} colStart={0} colEnd={1} h="0">
             <Flex w="100px">
@@ -117,6 +118,7 @@ const DebtBalances = ({
                   colStart={1}
                   colEnd={2}
                   h="0"
+                  
                 >
                   <Text size="sm" mr="16px">
                     <b>{debt.symbol} :</b>
@@ -152,6 +154,7 @@ const DebtBalances = ({
           border="1px"
           borderRadius="10px"
           padding="10px"
+          backgroundColor='white' opacity='0.9'
         >
           <GridItem rowSpan={1} colSpan={1} colStart={0} colEnd={1} h="0">
             <Flex w="100px">

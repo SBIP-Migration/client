@@ -1,8 +1,15 @@
+
+
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 .pixel_font{
   font-family: 'VT323', monospace;
 }
 
+/* .background{
+  background-image: url('../public/background.png') ;
+  object-fit: fill;
+  position: relative;
+} */
 :root {
   --max-width: 1100px;
   --border-radius: 12px;

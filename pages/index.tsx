@@ -14,6 +14,7 @@ import {
 import { ethers } from 'ethers'
 import StepProgress from '../components/step-progress/stepProgress'
 import Dashboard from '../components/Dashboard'
+import background from '../public/background.png'
 
 export enum StepEnum {
   CONNECT_WALLET = 1,
@@ -100,7 +101,8 @@ export default function Home() {
   }, [])
 
   return (
-    <Flex flexDir="column" height="100vh">
+    <div style={{backgroundImage: "url(/opacity3.png)", backgroundSize: 'cover'}} >
+    <Flex flexDir="column" height="100vh" >
       <Head>
         <title>OmniTransfer</title>
         <meta
@@ -113,7 +115,7 @@ export default function Home() {
       <h1 className='pixel_font'  style={{ fontSize: 70 }}>
             OmniTransfer
           </h1>
-          <h1 className='pixel_font' style={{ fontSize: 30 }}>Transfer all your tokens & positions in one click</h1>
+          <h1 className='pixel_font' style={{ fontSize: 40 }}>Transfer all your tokens & positions in one click</h1>
         <VStack height="100%" pt="5">
           {walletSigner && (
             <Text size="md">Address connected: {walletSigner} </Text>
@@ -137,5 +139,6 @@ export default function Home() {
         </VStack>
       </Flex>
     </Flex>
+    </div>
   )
 }
