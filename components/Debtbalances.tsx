@@ -24,6 +24,7 @@ type Props = {
   variableDebtBalances: WrapperTokenType[]
   approvedCreditDelegationAddresses: string[]
   addApprovedCreditDelegationAddress: (address: string) => void
+  setIsSameWallet: (isSameWallet: boolean) => void
 }
 
 const DebtBalances = ({
@@ -31,7 +32,7 @@ const DebtBalances = ({
   variableDebtBalances,
   approvedCreditDelegationAddresses,
   addApprovedCreditDelegationAddress,
-  stateChange
+  setIsSameWallet,
 }: Props) => {
   // Pop up wallet, while keeping tx state
   const { isOpen, onClose, onOpen } = useDisclosure()
@@ -51,12 +52,12 @@ const DebtBalances = ({
   useEffect(() => {
     if (!wallet || !wallet.accounts?.[0]?.address) return
     localStorage.setItem('recipient', wallet?.accounts?.[0]?.address)
-    if(wallet.accounts?.[0]?.address == localStorage.getItem('sender'))
-    {
-      stateChange(true)
 
+    // Check if sender and recipient are the same
+    if (wallet.accounts?.[0]?.address == localStorage.getItem('sender')) {
+      setIsSameWallet(true)
     }
-  }, [wallet, stateChange])
+  }, [wallet, setIsSameWallet])
 
   const isOldWallet = useMemo(() => {
     return (
