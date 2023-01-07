@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from 'ethers'
-import { Button, Flex, Heading, Text } from '@chakra-ui/react'
+import { Button, Flex, Heading, Text, Grid, GridItem } from '@chakra-ui/react'
 import { useWallets } from '@web3-onboard/react'
 import { approveToken } from '../utils/ethers'
 import { AAVE_MIGRATION_CONTRACT } from '../constants'
@@ -42,27 +42,39 @@ const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
       <Heading size="md" mb="3.5" textAlign="center">
         Your AAVE balances here:
       </Heading>
-      <Flex flexDir="column" justifyContent="center" alignItems="center">
-        <Text maxW="450px" textAlign="center" mb="32px">
-          Please approve all your Aave positions, so that we can transfer your
-          holdings to the intended wallet
-        </Text>
+      <Text maxW="450px" textAlign="center" mb="32px">
+        Please approve all your Aave positions, so that we can transfer your
+        holdings to the intended wallet
+      </Text>
+      <Flex flexDir="column" justifyContent="center" alignItems="left" ml="30">
         {aTokenBalances
           .filter((bal) => bal.balance.gt(0))
           .map((aTokenBalance) => (
-            <Flex key={aTokenBalance.symbol} alignItems="center" mb="3">
-              <Text mr="3">
-                {aTokenBalance.symbol}: {aTokenBalance.balanceInTokenDecimals}{' '}
-              </Text>
-              <Button
-                disabled={!!aTokenBalance.allowance.gt(aTokenBalance.balance)}
-                onClick={() => onHandleApprove(aTokenBalance)}
+            <>
+              <Grid
+                key={aTokenBalance.symbol}
+                templateColumns={'280px repeat(1, 1fr)'}
+                gap={0}
               >
-                {aTokenBalance.allowance.gt(aTokenBalance.balance)
-                  ? 'Approved'
-                  : 'Approve'}
-              </Button>
-            </Flex>
+                <GridItem colStart={1} colEnd={2} h="0" >
+                <Text mr="3">
+                  <b>{aTokenBalance.symbol}: </b>{aTokenBalance.balanceInTokenDecimals}{' '}
+                </Text>{' '}
+                </GridItem>
+                <GridItem colStart={4} colEnd={8} h="12"  >
+                <Button
+                    disabled={
+                      !!aTokenBalance.allowance.gt(aTokenBalance.balance)
+                    }
+                    onClick={() => onHandleApprove(aTokenBalance)}
+                  >
+                    {aTokenBalance.allowance.gt(aTokenBalance.balance)
+                      ? 'Approved'
+                      : 'Approve'}
+                  </Button>
+                </GridItem>
+              </Grid>
+            </>
           ))}
       </Flex>
     </Flex>

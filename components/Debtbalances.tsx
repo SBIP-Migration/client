@@ -12,6 +12,8 @@ import {
   Text,
   useDisclosure,
   usePrevious,
+  Grid,
+  GridItem,
 } from '@chakra-ui/react'
 import { useConnectWallet, useWallets } from '@web3-onboard/react'
 import { approveCreditDelegation } from '../utils/ethers'
@@ -80,7 +82,7 @@ const DebtBalances = ({
       <Heading textAlign="center" mb="8px">
         Debt Positions
       </Heading>
-      <Text mb="28px">
+      <Text mb="28px" ml='5'>
         Please delegate all debt positions to the contract to start the transfer
       </Text>
       <Center mb="24px">
@@ -88,52 +90,78 @@ const DebtBalances = ({
           Switch to recipient wallet
         </Button>
       </Center>
-      <Flex flexDir="column" justifyContent="center" alignItems="center">
+      <Flex flexDir="column" justifyContent="center" alignItems="left" ml="0">
         {stableDebtBalances
           ?.filter((debt) => debt?.balance?.gt(0))
           .map((debt) => (
-            <Flex key={debt.symbol} alignItems="center" mb="3">
-              <Text size="sm" mr="16px">
-                {debt.symbol} Stable Debt: {debt.balanceInTokenDecimals}
-              </Text>
-              {!isOldWallet && (
-                <Button
-                  isDisabled={approvedCreditDelegationAddresses
-                    .map((addr) => addr.toLowerCase())
-                    .includes(debt.contractAddress.toLowerCase())}
-                  onClick={() => onHandleApprove(debt)}
-                >
-                  {approvedCreditDelegationAddresses
-                    .map((addr) => addr.toLowerCase())
-                    .includes(debt.contractAddress.toLowerCase())
-                    ? 'Approved'
-                    : 'Approve'}
-                </Button>
-              )}
-            </Flex>
+            <>
+              <Grid
+                key={debt.symbol}
+                templateColumns={'100px repeat(4, 1fr)'}
+                gap={0}
+              >
+                <GridItem colStart={1} colEnd={2} h="0">
+                  <Text size="sm" mr="16px">
+                    <b>{debt.symbol}</b>
+                  </Text>
+                </GridItem>
+                <GridItem colStart={2} colEnd={5} h="12">
+                 <b>Stable Debt:</b> {debt.balanceInTokenDecimals}
+                </GridItem>
+                <GridItem colStart={7} colEnd={8} h="12">
+                  {!isOldWallet && (
+                    <Button
+                      isDisabled={approvedCreditDelegationAddresses
+                        .map((addr) => addr.toLowerCase())
+                        .includes(debt.contractAddress.toLowerCase())}
+                      onClick={() => onHandleApprove(debt)}
+                    >
+                      {approvedCreditDelegationAddresses
+                        .map((addr) => addr.toLowerCase())
+                        .includes(debt.contractAddress.toLowerCase())
+                        ? 'Approved'
+                        : 'Approve'}
+                    </Button>
+                  )}
+                </GridItem>
+              </Grid>
+            </>
           ))}
         {variableDebtBalances
           ?.filter((debt) => debt?.balance?.gt(0))
           ?.map((debt) => (
-            <Flex key={debt.symbol} alignItems="center" mb="3">
-              <Text size="sm" mr="16px">
-                {debt.symbol} Variable Debt: {debt.balanceInTokenDecimals}
-              </Text>
-              {!isOldWallet && (
-                <Button
-                  isDisabled={approvedCreditDelegationAddresses
-                    .map((addr) => addr.toLowerCase())
-                    .includes(debt.contractAddress.toLowerCase())}
-                  onClick={() => onHandleApprove(debt)}
-                >
-                  {approvedCreditDelegationAddresses
-                    .map((addr) => addr.toLowerCase())
-                    .includes(debt.contractAddress.toLowerCase())
-                    ? 'Approved'
-                    : 'Approve'}
-                </Button>
-              )}
-            </Flex>
+            <>
+              <Grid
+                key={debt.symbol}
+                templateColumns={'100px repeat(3, 1fr)'}
+                gap={0}
+              >
+                <GridItem colStart={1} colEnd={2} h="0">
+                  <Text size="sm" mr="16px">
+                    <b>{debt.symbol}</b>
+                  </Text>
+                </GridItem>
+                <GridItem colStart={2} colEnd={5} h="12">
+                  <b>Variable Debt:</b> {debt.balanceInTokenDecimals}
+                </GridItem>
+                <GridItem colStart={7} colEnd={8} h="12">
+                  {!isOldWallet && (
+                    <Button
+                      isDisabled={approvedCreditDelegationAddresses
+                        .map((addr) => addr.toLowerCase())
+                        .includes(debt.contractAddress.toLowerCase())}
+                      onClick={() => onHandleApprove(debt)}
+                    >
+                      {approvedCreditDelegationAddresses
+                        .map((addr) => addr.toLowerCase())
+                        .includes(debt.contractAddress.toLowerCase())
+                        ? 'Approved'
+                        : 'Approve'}
+                    </Button>
+                  )}
+                </GridItem>
+              </Grid>
+            </>
           ))}
       </Flex>
       <Modal

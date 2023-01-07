@@ -109,10 +109,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Flex flexDir="column" alignItems="center" height="100%" mt="72px">
-        <Heading as="h1" size="lg" textAlign="center" mb="4" maxW="500px">
-          OmniTransfer <br /> Transfer all your tokens & positions in one click
-        </Heading>
-
+      <h1 className='pixel_font'  style={{ fontSize: 70 }}>
+            OmniTransfer
+          </h1>
+          <h1 className='pixel_font' style={{ fontSize: 30 }}>Transfer all your tokens & positions in one click</h1>
         <VStack height="100%" pt="5">
           {walletSigner && (
             <Text size="md">Address connected: {walletSigner} </Text>
