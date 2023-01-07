@@ -17,7 +17,7 @@ import { useConnectWallet, useWallets } from '@web3-onboard/react'
 import { approveCreditDelegation } from '../utils/ethers'
 import { AAVE_MIGRATION_CONTRACT } from '../constants'
 import { WrapperTokenType } from './Balances'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 type Props = {
   stableDebtBalances: WrapperTokenType[]
@@ -31,6 +31,7 @@ const DebtBalances = ({
   variableDebtBalances,
   approvedCreditDelegationAddresses,
   addApprovedCreditDelegationAddress,
+  stateChange
 }: Props) => {
   // Pop up wallet, while keeping tx state
   const { isOpen, onClose, onOpen } = useDisclosure()
@@ -50,7 +51,12 @@ const DebtBalances = ({
   useEffect(() => {
     if (!wallet || !wallet.accounts?.[0]?.address) return
     localStorage.setItem('recipient', wallet?.accounts?.[0]?.address)
-  }, [wallet])
+    if(wallet.accounts?.[0]?.address == localStorage.getItem('sender'))
+    {
+      stateChange(true)
+
+    }
+  }, [wallet, stateChange])
 
   const isOldWallet = useMemo(() => {
     return (

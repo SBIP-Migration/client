@@ -47,13 +47,13 @@ const ExecuteTransfer = ({
     connect()
     onClose()
     const sender = localStorage.getItem('sender')
-
+    console.log("sender",sender)
     // Save for later
     if (
-      wallet &&
-      (!sender || sender !== wallet.accounts?.[0]?.address.toLowerCase())
+      wallet && (!sender || sender !== wallet.accounts?.[0]?.address.toLowerCase())
     ) {
       // Throw modal error
+      console.log(">>>>>")
     }
   }, [connect, onClose, wallet])
 
@@ -113,7 +113,7 @@ const ExecuteTransfer = ({
           </Button>
         </Center>
       </Flex>
-      <Modal
+      {/* <Modal
         isOpen={isOpen}
         onClose={onClose}
         closeOnOverlayClick={false}
@@ -141,7 +141,7 @@ const ExecuteTransfer = ({
             )}
           </ModalFooter>
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </>
   )
 }

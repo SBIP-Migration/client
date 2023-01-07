@@ -28,6 +28,8 @@ const Dashboard = ({
     setApprovedCreditDelegationAddresses,
   ] = useState<string[]>([])
 
+  const [sameWallet , setSamewallet] = useState(true)
+
   const isButtonEnabled = useMemo(() => {
     if (currentStep === StepEnum.APPROVE_A_TOKENS) {
       return (
@@ -90,6 +92,7 @@ const Dashboard = ({
             approvedCreditDelegationAddresses={
               approvedCreditDelegationAddresses
             }
+            stateChange ={setSamewallet}
           />
         ),
         [StepEnum.TRANSFER_TOKENS]: (
@@ -101,7 +104,9 @@ const Dashboard = ({
         ),
       }[currentStep] ?? null}
       {currentStep != StepEnum.CONNECT_WALLET &&
-        currentStep != StepEnum.TRANSFER_TOKENS && (
+        currentStep != StepEnum.TRANSFER_TOKENS && 
+        (currentStep != StepEnum.APPROVE_DEBT_POSITIONS && sameWallet) &&
+        (
           <Button
             alignSelf="center"
             backgroundColor="red"
