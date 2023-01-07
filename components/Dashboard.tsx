@@ -109,6 +109,7 @@ const Dashboard = ({
             onClick={nextStep}
             mt="5"
             disabled={!isButtonEnabled}
+            mb='120'
           >
             Next
           </Button>

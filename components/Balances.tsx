@@ -47,35 +47,46 @@ const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
         holdings to the intended wallet
       </Text>
       <Flex flexDir="column" justifyContent="center" alignItems="left" ml="30">
+      <Grid
+                
+                templateColumns={'150px repeat(0, 1fr)'}
+                gap={0}
+                gridTemplateRows={'50px repeat(1, 1fr)'}
+                border="1px"
+                borderRadius="10px"
+                padding="20px"
+                // alignContent='cente'
+              >
         {aTokenBalances
           .filter((bal) => bal.balance.gt(0))
           .map((aTokenBalance) => (
             <>
-              <Grid
-                key={aTokenBalance.symbol}
-                templateColumns={'150px repeat(0, 1fr)'}
-                gap={0}
-              >
-                <GridItem colStart={2} colEnd={2} h="0" >
+
+                <GridItem key={aTokenBalance.symbol} colStart={1} colEnd={2} h="0" >
                 <Text mr="3">
-                  <b>{aTokenBalance.symbol}: </b>{parseFloat(aTokenBalance.balanceInTokenDecimals).toFixed(5)}{' '}
+                  <b>{aTokenBalance.symbol}: </b>
                 </Text>{' '}
                 </GridItem>
-                <GridItem colStart={3} colEnd={8} h="12"  >
+                <GridItem colStart={2} colEnd={3} h="0" >
+                {parseFloat(aTokenBalance.balanceInTokenDecimals).toFixed(5)}{' '}
+                </GridItem>
+                <GridItem colStart={4} colEnd={5} h="12" >
                 <Button
                     disabled={
                       !!aTokenBalance.allowance.gt(aTokenBalance.balance)
                     }
                     onClick={() => onHandleApprove(aTokenBalance)}
+  
                   >
                     {aTokenBalance.allowance.gt(aTokenBalance.balance)
                       ? 'Approved'
                       : 'Approve'}
                   </Button>
                 </GridItem>
-              </Grid>
+
             </>
           ))}
+                        </Grid>
       </Flex>
     </Flex>
   )
