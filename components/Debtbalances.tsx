@@ -52,6 +52,7 @@ const DebtBalances = ({
   useEffect(() => {
     if (!wallet || !wallet.accounts?.[0]?.address) return
     localStorage.setItem('recipient', wallet?.accounts?.[0]?.address)
+    console.log('stableDebtBalances', stableDebtBalances)
   }, [wallet])
 
   const isOldWallet = useMemo(() => {
@@ -82,7 +83,7 @@ const DebtBalances = ({
       <Heading textAlign="center" mb="8px">
         Debt Positions
       </Heading>
-      <Text mb="28px" ml='5'>
+      <Text mb="28px" ml="5">
         Please delegate all debt positions to the contract to start the transfer
       </Text>
       <Center mb="24px">
@@ -90,25 +91,41 @@ const DebtBalances = ({
           Switch to recipient wallet
         </Button>
       </Center>
-      <Flex flexDir="column" justifyContent="center" alignItems="left" ml="0">
-        {stableDebtBalances
-          ?.filter((debt) => debt?.balance?.gt(0))
-          .map((debt) => (
-            <>
-              <Grid
-                key={debt.symbol}
-                templateColumns={'100px repeat(4, 1fr)'}
-                gap={0}
-              >
-                <GridItem colStart={1} colEnd={2} h="0">
+      <Flex flexDir="column" justifyContent="center" alignItems="left" ml="30">
+        <Grid
+          templateColumns={'100px repeat(2, 1fr)'}
+          gridTemplateRows={'50px repeat(3, 1fr) 30px'}
+          gap={0}
+          border="1px"
+          borderRadius="10px"
+          padding="10px"
+          mb='10px'
+        >
+          <GridItem rowSpan={1} colSpan={1} colStart={0} colEnd={1} h="0">
+            <Flex w="100px">
+              <b>Stable Interest Debt</b>
+            </Flex>
+          </GridItem>
+          {stableDebtBalances
+            ?.filter((debt) => debt?.balance?.gt(0))
+            .map((debt) => (
+              <>
+                <GridItem
+                  key={debt.symbol}
+                  rowSpan={1}
+                  colSpan={1}
+                  colStart={1}
+                  colEnd={2}
+                  h="0"
+                >
                   <Text size="sm" mr="16px">
-                    <b>{debt.symbol}</b>
+                    <b>{debt.symbol} :</b>
                   </Text>
                 </GridItem>
-                <GridItem colStart={2} colEnd={5} h="12">
-                 <b>Stable Debt:</b> {debt.balanceInTokenDecimals}
+                <GridItem colStart={2} colEnd={3} h="12">
+                  {parseFloat(debt.balanceInTokenDecimals).toFixed(5)}
                 </GridItem>
-                <GridItem colStart={7} colEnd={8} h="12">
+                <GridItem colStart={3} colEnd={5} h="12">
                   {!isOldWallet && (
                     <Button
                       isDisabled={approvedCreditDelegationAddresses
@@ -124,27 +141,44 @@ const DebtBalances = ({
                     </Button>
                   )}
                 </GridItem>
-              </Grid>
-            </>
-          ))}
-        {variableDebtBalances
-          ?.filter((debt) => debt?.balance?.gt(0))
-          ?.map((debt) => (
-            <>
-              <Grid
-                key={debt.symbol}
-                templateColumns={'100px repeat(3, 1fr)'}
-                gap={0}
-              >
-                <GridItem colStart={1} colEnd={2} h="0">
+              </>
+            ))}
+        </Grid>
+
+        <Grid
+          gap={0}
+          templateColumns={'100px repeat(2, 1fr)'}
+          gridTemplateRows={'50px repeat(1, 1fr)'}
+          border="1px"
+          borderRadius="10px"
+          padding="10px"
+        >
+          <GridItem rowSpan={1} colSpan={1} colStart={0} colEnd={1} h="0">
+            <Flex w="100px">
+              <b>Variable Interest Debt</b>
+            </Flex>
+          </GridItem>
+          {/* <Flex border="1px" borderRadius="10px" padding="10px"> */}
+          {variableDebtBalances
+            ?.filter((debt) => debt?.balance?.gt(0))
+            ?.map((debt) => (
+              <>
+                <GridItem
+                  key={debt.symbol}
+                  rowSpan={1}
+                  colSpan={1}
+                  colStart={1}
+                  colEnd={2}
+                  h="0"
+                >
                   <Text size="sm" mr="16px">
-                    <b>{debt.symbol}</b>
+                    <b>{debt.symbol} :</b>
                   </Text>
                 </GridItem>
-                <GridItem colStart={2} colEnd={5} h="12">
-                  <b>Variable Debt:</b> {debt.balanceInTokenDecimals}
+                <GridItem colStart={2} colEnd={3} h="12">
+                  {parseFloat(debt.balanceInTokenDecimals).toFixed(5)}
                 </GridItem>
-                <GridItem colStart={7} colEnd={8} h="12">
+                <GridItem colStart={3} colEnd={5} h="12">
                   {!isOldWallet && (
                     <Button
                       isDisabled={approvedCreditDelegationAddresses
@@ -160,9 +194,10 @@ const DebtBalances = ({
                     </Button>
                   )}
                 </GridItem>
-              </Grid>
-            </>
-          ))}
+              </>
+            ))}
+          {/* </Flex> */}
+        </Grid>
       </Flex>
       <Modal
         isOpen={isOpen}

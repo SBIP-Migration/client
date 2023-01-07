@@ -60,6 +60,7 @@ export default function Home() {
 
       if (stableDebtBalancesPromise.status === 'fulfilled') {
         setStableDebtBalances(stableDebtBalancesPromise.value)
+
       }
 
       if (variableDebtBalancesPromise.status === 'fulfilled') {

@@ -53,15 +53,15 @@ const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
             <>
               <Grid
                 key={aTokenBalance.symbol}
-                templateColumns={'280px repeat(1, 1fr)'}
+                templateColumns={'150px repeat(0, 1fr)'}
                 gap={0}
               >
-                <GridItem colStart={1} colEnd={2} h="0" >
+                <GridItem colStart={2} colEnd={2} h="0" >
                 <Text mr="3">
-                  <b>{aTokenBalance.symbol}: </b>{aTokenBalance.balanceInTokenDecimals}{' '}
+                  <b>{aTokenBalance.symbol}: </b>{parseFloat(aTokenBalance.balanceInTokenDecimals).toFixed(5)}{' '}
                 </Text>{' '}
                 </GridItem>
-                <GridItem colStart={4} colEnd={8} h="12"  >
+                <GridItem colStart={3} colEnd={8} h="12"  >
                 <Button
                     disabled={
                       !!aTokenBalance.allowance.gt(aTokenBalance.balance)
