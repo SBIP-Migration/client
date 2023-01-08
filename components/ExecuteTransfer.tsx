@@ -54,7 +54,9 @@ const ExecuteTransfer = ({
       (!sender || sender !== wallet.accounts?.[0]?.address.toLowerCase())
     ) {
       // Throw modal error
-      console.log('>>>>>')
+      console.error(
+        'Wrong wallet connected, please connect the original sender wallet'
+      )
     }
   }, [connect, onClose, wallet])
 
@@ -75,8 +77,6 @@ const ExecuteTransfer = ({
       amount: aToken.balance.toString(),
       aTokenAddress: aToken.contractAddress,
     }))
-
-    console.log('aTokenPositions', aTokenPositions)
 
     const tx = await executeMigration(
       wallet,
@@ -171,8 +171,6 @@ const generateDebtTokenPositions = (
       tokenAddress: stableDebt.tokenAddress,
     })
   })
-
-  console.log('debtTokenBalances', debtTokenBalances)
 
   return debtTokenBalances
 }
