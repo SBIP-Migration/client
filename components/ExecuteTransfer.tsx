@@ -60,10 +60,10 @@ const ExecuteTransfer = ({
 
   const onButtonClick = useCallback(async () => {
     const recipient = localStorage.getItem('recipient')
-    // if (!recipient) {
-    //   // Throw modal error
-    //   return
-    // }
+    if (!recipient) {
+      // Throw modal error
+      return
+    }
 
     const debtTokenBalances: DebtTokenPosition[] = generateDebtTokenPositions(
       variableDebtBalances,
@@ -80,7 +80,7 @@ const ExecuteTransfer = ({
 
     const tx = await executeMigration(
       wallet,
-      '0xf20Fc5343AA0257eCff5e4BB78F127312f899692',
+      recipient,
       debtTokenBalances,
       aTokenPositions
     )
