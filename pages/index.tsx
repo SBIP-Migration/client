@@ -16,7 +16,8 @@ import {
 import { ethers } from 'ethers'
 import StepProgress from '../components/step-progress/stepProgress'
 import Dashboard from '../components/Dashboard'
-import background from '../public/background.png'
+import Image from 'next/image'
+import ghost from '../public/omni_mascot.png'
 
 export enum StepEnum {
   CONNECT_WALLET = 1,
@@ -63,7 +64,6 @@ export default function Home() {
 
       if (stableDebtBalancesPromise.status === 'fulfilled') {
         setStableDebtBalances(stableDebtBalancesPromise.value)
-
       }
 
       if (variableDebtBalancesPromise.status === 'fulfilled') {
@@ -120,45 +120,56 @@ export default function Home() {
   }, [])
 
   return (
-    <div style={{backgroundImage: "url(/opacity3.png)", backgroundSize: 'cover'}} >
-    <Flex flexDir="column" height="100vh" >
-      <Head>
-        <title>OmniTransfer</title>
-        <meta
-          name="description"
-          content="Migrate your Aave positions to another wallet"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Flex flexDir="column" alignItems="center" height="100%" mt="72px">
-      <h1 className='pixel_font'  style={{ fontSize: 70 }}>
+    <div
+      style={{ backgroundImage: 'url(/opacity3.png)', backgroundSize: 'cover' }}
+    >
+      <Flex flexDir="column" height="100vh">
+        <Head>
+          <title>OmniTransfer</title>
+          <meta
+            name="description"
+            content="Migrate your Aave positions to another wallet"
+          />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+
+        <Flex flexDir="column" alignItems="center" height="100%" mt="72px">
+        <Flex >
+          <h1 className="pixel_font" style={{ fontSize: 70 }}>
             OmniTransfer
           </h1>
-          <h1 className='pixel_font' style={{ fontSize: 40 }}>Transfer all your tokens & positions in one click</h1>
-        <VStack height="100%" pt="5">
-          {walletSigner && (
-            <Text size="md">Address connected: {walletSigner} </Text>
-          )}
-          <StepProgress
-            {...{
-              currentStep,
-              updateStep: updateCurrentStep,
-            }}
-          />
-          <Dashboard
-            {...{
-              currentStep,
-              nextStep: () => updateCurrentStep(currentStep + 1),
-              refreshTokenBalances: onRefreshTokenBalances,
-              aTokenBalances,
-              stableDebtBalances,
-              variableDebtBalances,
-              refreshDebtAllowances,
-            }}
-          />
-        </VStack>
+          <Flex ml='2' mt='5'>
+          <Image className='relative sizing' src={ghost} alt="omni mascot"/>
+          </Flex>
+          </Flex>
+          <h1 className="pixel_font" style={{ fontSize: 40 }}>
+            Transfer all tokens & positions in one click
+          </h1>
+          <VStack height="100%" pt="5">
+            {walletSigner && (
+              <Text size="md">Address connected: {walletSigner} </Text>
+            )}
+            <StepProgress
+              {...{
+                currentStep,
+                updateStep: updateCurrentStep,
+              }}
+            />
+            <Dashboard
+              {...{
+                currentStep,
+                nextStep: () => updateCurrentStep(currentStep + 1),
+                refreshTokenBalances: onRefreshTokenBalances,
+                aTokenBalances,
+                stableDebtBalances,
+                variableDebtBalances,
+                refreshDebtAllowances,
+              }}
+            />
+          </VStack>
+        </Flex>
       </Flex>
-    </Flex>
     </div>
+    
   )
 }
