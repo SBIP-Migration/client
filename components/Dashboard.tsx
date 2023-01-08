@@ -13,6 +13,7 @@ type Props = {
   aTokenBalances: WrapperTokenType[]
   stableDebtBalances: WrapperTokenType[]
   variableDebtBalances: WrapperTokenType[]
+  refreshDebtAllowances: () => Promise<void>
 }
 
 const Dashboard = ({
@@ -22,11 +23,9 @@ const Dashboard = ({
   aTokenBalances,
   stableDebtBalances,
   variableDebtBalances,
+  refreshDebtAllowances,
 }: Props) => {
-  const [
-    approvedCreditDelegationAddresses,
-    setApprovedCreditDelegationAddresses,
-  ] = useState<string[]>([])
+  const [isSameWallet, setIsSameWallet] = useState<boolean>(true)
 
   const isButtonEnabled = useMemo(() => {
     if (currentStep === StepEnum.APPROVE_A_TOKENS) {
@@ -37,38 +36,19 @@ const Dashboard = ({
     }
 
     if (currentStep === StepEnum.APPROVE_DEBT_POSITIONS) {
-      const numStableDebt = stableDebtBalances.filter((bal) =>
-        bal.balance.gt(0)
+      const numUndelegatedStableDebt = stableDebtBalances.filter((bal) =>
+        bal.balance.gte(bal.allowance)
       ).length
-      const numVariableDebt = variableDebtBalances.filter((bal) =>
-        bal.balance.gt(0)
+      const numUndelegatedVariableDebt = variableDebtBalances.filter((bal) =>
+        bal.balance.gte(bal.allowance)
       ).length
 
-      return (
-        numStableDebt + numVariableDebt >=
-        approvedCreditDelegationAddresses.length
-      )
+      return numUndelegatedStableDebt > 0 || numUndelegatedVariableDebt > 0
     }
 
     // TODO: Add logic for debt positions
     return false
-  }, [
-    aTokenBalances,
-    approvedCreditDelegationAddresses.length,
-    currentStep,
-    stableDebtBalances,
-    variableDebtBalances,
-  ])
-
-  const addApprovedCreditDelegationAddress = useCallback(
-    (contractAddress: string) => {
-      setApprovedCreditDelegationAddresses((addresses) => [
-        ...addresses,
-        contractAddress,
-      ])
-    },
-    []
-  )
+  }, [aTokenBalances, currentStep, stableDebtBalances, variableDebtBalances])
 
   return (
     <Flex flexDir="column">
@@ -84,12 +64,8 @@ const Dashboard = ({
           <DebtBalances
             stableDebtBalances={stableDebtBalances}
             variableDebtBalances={variableDebtBalances}
-            addApprovedCreditDelegationAddress={
-              addApprovedCreditDelegationAddress
-            }
-            approvedCreditDelegationAddresses={
-              approvedCreditDelegationAddresses
-            }
+            setIsSameWallet={setIsSameWallet}
+            refreshDebtAllowances={refreshDebtAllowances}
           />
         ),
         [StepEnum.TRANSFER_TOKENS]: (
@@ -101,7 +77,8 @@ const Dashboard = ({
         ),
       }[currentStep] ?? null}
       {currentStep != StepEnum.CONNECT_WALLET &&
-        currentStep != StepEnum.TRANSFER_TOKENS && (
+        currentStep != StepEnum.TRANSFER_TOKENS &&
+        isSameWallet && (
           <Button
             alignSelf="center"
             backgroundColor="red"
@@ -109,7 +86,7 @@ const Dashboard = ({
             onClick={nextStep}
             mt="5"
             disabled={!isButtonEnabled}
-            mb='120'
+            mb="120"
           >
             Next
           </Button>

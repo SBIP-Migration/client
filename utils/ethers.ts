@@ -93,7 +93,7 @@ const executeMigration = async (
     debtTokenPositions,
     aTokenPositions,
     {
-      gasLimit: BigNumber.from(1_500_000),
+      gasLimit: 1_500_000,
     }
   )
 }

@@ -54,15 +54,16 @@ const ExecuteTransfer = ({
       (!sender || sender !== wallet.accounts?.[0]?.address.toLowerCase())
     ) {
       // Throw modal error
+      console.log('>>>>>')
     }
   }, [connect, onClose, wallet])
 
   const onButtonClick = useCallback(async () => {
     const recipient = localStorage.getItem('recipient')
-    if (!recipient) {
-      // Throw modal error
-      return
-    }
+    // if (!recipient) {
+    //   // Throw modal error
+    //   return
+    // }
 
     const debtTokenBalances: DebtTokenPosition[] = generateDebtTokenPositions(
       variableDebtBalances,
@@ -75,9 +76,11 @@ const ExecuteTransfer = ({
       aTokenAddress: aToken.contractAddress,
     }))
 
+    console.log('aTokenPositions', aTokenPositions)
+
     const tx = await executeMigration(
       wallet,
-      recipient,
+      '0xf20Fc5343AA0257eCff5e4BB78F127312f899692',
       debtTokenBalances,
       aTokenPositions
     )
@@ -168,6 +171,8 @@ const generateDebtTokenPositions = (
       tokenAddress: stableDebt.tokenAddress,
     })
   })
+
+  console.log('debtTokenBalances', debtTokenBalances)
 
   return debtTokenBalances
 }
