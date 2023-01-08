@@ -14,6 +14,7 @@ const ConnectWallet = ({ nextStep }: Props) => {
   ] = useSetChain()
 
   const handleClick = async () => {
+    console.log("connecting wallet")
     await connect()
     await setChain({ chainId: '0x5' })
     nextStep()
