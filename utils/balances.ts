@@ -145,4 +145,60 @@ const getATokenBalances = async (
   return aTokenBalancesList
 }
 
-export { getATokenBalances, getStableDebtBalances, getVariableDebtBalances }
+const updateStableDebtAllowances = async (
+  provider: ethers.providers.Provider,
+  userAddress: string,
+  stableDebtBalances: Array<WrapperTokenType>
+) => {
+  for (let i = 0; i < stableDebtBalances.length; i++) {
+    const tokenContract = new ethers.Contract(
+      stableDebtBalances[i].contractAddress,
+      [
+        'function borrowAllowance(address fromUser, address toUser) external view returns (uint256)',
+      ],
+      provider
+    )
+
+    const contractTokenAllowance = (await tokenContract.borrowAllowance(
+      userAddress,
+      AAVE_MIGRATION_CONTRACT
+    )) as BigNumber
+
+    stableDebtBalances[i].allowance = contractTokenAllowance
+  }
+
+  return stableDebtBalances
+}
+
+const updateVariableDebtAllowances = async (
+  provider: ethers.providers.Provider,
+  userAddress: string,
+  variableDebtBalances: Array<WrapperTokenType>
+) => {
+  for (let i = 0; i < variableDebtBalances.length; i++) {
+    const tokenContract = new ethers.Contract(
+      variableDebtBalances[i].contractAddress,
+      [
+        'function borrowAllowance(address fromUser, address toUser) external view returns (uint256)',
+      ],
+      provider
+    )
+
+    const contractTokenAllowance = (await tokenContract.borrowAllowance(
+      userAddress,
+      AAVE_MIGRATION_CONTRACT
+    )) as BigNumber
+
+    variableDebtBalances[i].allowance = contractTokenAllowance
+  }
+
+  return variableDebtBalances
+}
+
+export {
+  getATokenBalances,
+  getStableDebtBalances,
+  getVariableDebtBalances,
+  updateStableDebtAllowances,
+  updateVariableDebtAllowances,
+}

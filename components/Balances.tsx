@@ -30,7 +30,7 @@ const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
       AAVE_MIGRATION_CONTRACT,
       token.contractAddress,
       // Maximum amount of tokens that can be approved -> 2^256 - 1
-      BigNumber.from(ethers.BigNumber.from(2).pow(255))
+      BigNumber.from(2).pow(256).sub(1)
     )
     // Wait until transaction is confirmed, then update "allowance" status
     await tx.wait()

@@ -10,6 +10,8 @@ import {
   getATokenBalances,
   getStableDebtBalances,
   getVariableDebtBalances,
+  updateStableDebtAllowances,
+  updateVariableDebtAllowances,
 } from '../utils/balances'
 import { ethers } from 'ethers'
 import StepProgress from '../components/step-progress/stepProgress'
@@ -75,6 +77,23 @@ export default function Home() {
     await getAllBalances(walletSigner)
   }
 
+  const refreshDebtAllowances = async () => {
+    const newStableDebtBalances = await updateStableDebtAllowances(
+      provider,
+      walletSigner,
+      stableDebtBalances
+    )
+    const newVariableDebtBalances = await updateVariableDebtAllowances(
+      provider,
+      walletSigner,
+      variableDebtBalances
+    )
+    console.log('newVariableDebtBalances', newVariableDebtBalances)
+
+    setStableDebtBalances(newStableDebtBalances)
+    setVariableDebtBalances(newVariableDebtBalances)
+  }
+
   useEffect(() => {
     if (!wallet) return
     setProvider(getWeb3Provider(wallet))
@@ -134,6 +153,7 @@ export default function Home() {
               aTokenBalances,
               stableDebtBalances,
               variableDebtBalances,
+              refreshDebtAllowances,
             }}
           />
         </VStack>

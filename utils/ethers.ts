@@ -88,12 +88,18 @@ const executeMigration = async (
     signer
   )
 
+  const modifiedATokenPositions = aTokenPositions.map((aToken) => ({
+    ...aToken,
+    // 0.2% slippage to avoid flash loan revert (due to increasing debt token amount) -> cannot leave "dust debt" without collateral
+    amount: BigNumber.from(aToken.amount).mul(998).div(1000),
+  }))
+
   return flashLoanContract.migrateAavePositions(
     recipientAddress,
     debtTokenPositions,
-    aTokenPositions,
+    modifiedATokenPositions,
     {
-      gasLimit: BigNumber.from(1_500_000),
+      gasLimit: 1_500_000,
     }
   )
 }

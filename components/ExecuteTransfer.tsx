@@ -54,6 +54,9 @@ const ExecuteTransfer = ({
       (!sender || sender !== wallet.accounts?.[0]?.address.toLowerCase())
     ) {
       // Throw modal error
+      console.error(
+        'Wrong wallet connected, please connect the original sender wallet'
+      )
     }
   }, [connect, onClose, wallet])
 
