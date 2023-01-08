@@ -85,8 +85,9 @@ const Dashboard = ({
             textColor="white"
             onClick={nextStep}
             mt="5"
+            height='10'
             disabled={!isButtonEnabled}
-            mb="120"
+            className='nextbuttonposition'
           >
             Next
           </Button>
