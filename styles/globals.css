@@ -4,10 +4,43 @@
 .pixel_font{
   font-family: 'VT323', monospace;
 }
+
+.bgContainer{
+
+  height: 1000px;
+  width: 100%;
+  border-style: solid;
+  /* border-radius: 50px; */
+  /* border-style: solid; */
+  /* opacity: 80%; */
+  /* margin-top: 100px; */
+}
+
+.bgStart{
+
+  background-image: url("/opacity3.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* width: 2000px; */
+  height: 100%;
+  /* border-radius: 50px; */
+  /* border-style: solid; */
+}
+.relative{
+  position: relative;
+}
+.z-1{
+  z-index: -1;
+}
 .absolute{
   position: absolute
 }
-
+.fixed{
+  background-attachment: fixed;
+  /* height:'80vw'; */
+  /* background-image: url('/opacity3.png') ;
+  background-size: 'cover'; */
+}
 .sizing{
   width: 70px;
   height: 70px;

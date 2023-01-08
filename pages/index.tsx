@@ -4,7 +4,14 @@ import styles from '../styles/Home.module.css'
 import { init, useConnectWallet } from '@web3-onboard/react'
 
 import Balances, { WrapperTokenType } from '../components/Balances'
-import { Button, Flex, Heading, Text, VStack } from '@chakra-ui/react'
+import {
+  background,
+  Button,
+  Flex,
+  Heading,
+  Text,
+  VStack,
+} from '@chakra-ui/react'
 import { getWeb3Provider } from '../utils/ethers'
 import {
   getATokenBalances,
@@ -120,56 +127,61 @@ export default function Home() {
   }, [])
 
   return (
-    <div
-      style={{ backgroundImage: 'url(/opacity3.png)', backgroundSize: 'cover' }}
-    >
-      <Flex flexDir="column" height="100vh">
-        <Head>
-          <title>OmniTransfer</title>
-          <meta
-            name="description"
-            content="Migrate your Aave positions to another wallet"
-          />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
+    <>
+      <div className="bgContainer">
+        <div className="bgStart">
+          <Flex flexDir="column" height="100vh">
+            <Head>
+              <title>OmniTransfer</title>
+              <meta
+                name="description"
+                content="Migrate your Aave positions to another wallet"
+              />
+              <link rel="icon" href="/favicon.ico" />
+            </Head>
 
-        <Flex flexDir="column" alignItems="center" height="100%" mt="72px">
-        <Flex >
-          <h1 className="pixel_font" style={{ fontSize: 70 }}>
-            OmniTransfer
-          </h1>
-          <Flex ml='2' mt='5'>
-          <Image className='relative sizing' src={ghost} alt="omni mascot"/>
+            <Flex flexDir="column" alignItems="center" height="100%" mt="72px">
+              <Flex>
+                <h1 className="pixel_font" style={{ fontSize: 70 }}>
+                  OmniTransfer
+                </h1>
+                <Flex ml="2" mt="5">
+                  <Image
+                    className="relative sizing"
+                    src={ghost}
+                    alt="omni mascot"
+                  />
+                </Flex>
+              </Flex>
+              <h1 className="pixel_font" style={{ fontSize: 40 }}>
+                Transfer all tokens & positions in one click
+              </h1>
+              <VStack height="100%" pt="5">
+                {walletSigner && (
+                  <Text size="md">Address connected: {walletSigner} </Text>
+                )}
+                <StepProgress
+                  {...{
+                    currentStep,
+                    updateStep: updateCurrentStep,
+                  }}
+                />
+                <Dashboard
+                  {...{
+                    currentStep,
+                    nextStep: () => updateCurrentStep(currentStep + 1),
+                    refreshTokenBalances: onRefreshTokenBalances,
+                    aTokenBalances,
+                    stableDebtBalances,
+                    variableDebtBalances,
+                    refreshDebtAllowances,
+                  }}
+                />
+              </VStack>
+            </Flex>
           </Flex>
-          </Flex>
-          <h1 className="pixel_font" style={{ fontSize: 40 }}>
-            Transfer all tokens & positions in one click
-          </h1>
-          <VStack height="100%" pt="5">
-            {walletSigner && (
-              <Text size="md">Address connected: {walletSigner} </Text>
-            )}
-            <StepProgress
-              {...{
-                currentStep,
-                updateStep: updateCurrentStep,
-              }}
-            />
-            <Dashboard
-              {...{
-                currentStep,
-                nextStep: () => updateCurrentStep(currentStep + 1),
-                refreshTokenBalances: onRefreshTokenBalances,
-                aTokenBalances,
-                stableDebtBalances,
-                variableDebtBalances,
-                refreshDebtAllowances,
-              }}
-            />
-          </VStack>
-        </Flex>
-      </Flex>
-    </div>
-    
+        </div>
+      </div>
+    </>
   )
 }
