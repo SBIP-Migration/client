@@ -1,7 +1,7 @@
 import { BigNumber, ethers } from 'ethers'
 import { Button, Flex, Heading, Text, Grid, GridItem } from '@chakra-ui/react'
 import { useWallets } from '@web3-onboard/react'
-import { approveToken } from '../utils/ethers'
+import { approveToken, revokeToken } from '../utils/ethers'
 import { AAVE_MIGRATION_CONTRACT } from '../constants'
 
 type Props = {
@@ -37,6 +37,19 @@ const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
     await refreshTokenBalances()
   }
 
+  const onHandleRevoke = async (token: WrapperTokenType) => {
+    const tx = await revokeToken(
+      wallet,
+      AAVE_MIGRATION_CONTRACT,
+      token.contractAddress,
+      // Maximum amount of tokens that can be approved -> 2^256 - 1
+      //BigNumber.from(2).pow(256).sub(1)
+    )
+    // Wait until transaction is confirmed, then update "allowance" status
+    await tx.wait()
+    await refreshTokenBalances()
+  }
+
   return (
     <Flex flexDir="column" mt="7">
       <Heading  className='pixel_font'size="md" mb="3.5" textAlign="center"   style={{ fontSize: 25 }}>
@@ -62,7 +75,7 @@ const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
           .filter((bal) => bal.balance.gt(0))
           .map((aTokenBalance) => (
             <>
-
+                
                 <GridItem key={aTokenBalance.symbol} colStart={1} colEnd={2} h="0" >
                 <Text mr="3">
                   <b>{aTokenBalance.symbol}: </b>
@@ -83,6 +96,15 @@ const Balances = ({ aTokenBalances, refreshTokenBalances }: Props) => {
                       ? 'Approved'
                       : 'Approve'}
                   </Button>
+                  {/* <Button
+                    // disabled={
+                    //   !!aTokenBalance.allowance.gt(aTokenBalance.balance)
+                    // }
+                    onClick={() => onHandleRevoke(aTokenBalance)}
+  
+                  >
+                    {'Revoke'}
+                  </Button> */}
                 </GridItem>
 
             </>

@@ -50,6 +50,31 @@ const approveCreditDelegation = async (
 
   return debtTokenContract.functions.approveDelegation(contractAddress, amount)
 }
+const revokeCreditDelegation = async (
+  wallet: WalletState,
+  debtTokenAddress: string,
+  contractAddress: string,
+  //amount: BigNumber
+) => {
+  const provider = getWeb3Provider(wallet)
+  const signer = provider.getSigner()
+
+  const debtTokenABI = [
+    'function approveDelegation(address delegatee, uint256 amount) external',
+  ]
+
+  if (!signer) {
+    throw new Error('No signer')
+  }
+
+  const debtTokenContract = new ethers.Contract(
+    debtTokenAddress,
+    debtTokenABI,
+    signer
+  )
+
+  return debtTokenContract.functions.approveDelegation(contractAddress, 0)
+}
 
 const approveToken = async (
   wallet: WalletState,
@@ -67,6 +92,23 @@ const approveToken = async (
   const erc20Contract = new ethers.Contract(tokenAddress, erc20ABI, signer)
 
   return erc20Contract.functions.approve(contractAddress, amount)
+}
+const revokeToken = async (
+  wallet: WalletState,
+  contractAddress: string,
+  tokenAddress: string,
+  //amount: BigNumber
+) => {
+  const provider = getWeb3Provider(wallet)
+  const signer = provider.getSigner()
+
+  if (!signer) {
+    throw new Error('No signer')
+  }
+
+  const erc20Contract = new ethers.Contract(tokenAddress, erc20ABI, signer)
+
+  return erc20Contract.functions.approve(contractAddress, 0)
 }
 
 const executeMigration = async (
@@ -109,4 +151,6 @@ export {
   approveToken,
   approveCreditDelegation,
   executeMigration,
+  revokeToken,
+  revokeCreditDelegation
 }
