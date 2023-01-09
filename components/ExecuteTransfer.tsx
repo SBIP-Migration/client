@@ -107,10 +107,11 @@ const ExecuteTransfer = ({
             </Text>
           )}
           <Button
-            colorScheme="blue"
+            colorScheme="red"
             variant="outline"
             onClick={onButtonClick}
             alignSelf="center"
+            textColor='black'
           >
             Migrate positions to Aave
           </Button>

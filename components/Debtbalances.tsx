@@ -21,6 +21,7 @@ import { AAVE_MIGRATION_CONTRACT } from '../constants'
 import { WrapperTokenType } from './Balances'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { BigNumber } from 'ethers'
+import { revokeToken } from '../utils/ethers'
 import { revokeCreditDelegation } from '../utils/ethers'
 
 type Props = {
@@ -85,18 +86,20 @@ const DebtBalances = ({
     [refreshDebtAllowances, wallet]
   )
 
-  const onHandleRevoke = async (token: WrapperTokenType) => {
-    const tx = await revokeCreditDelegation(
-      wallet,
-      debtTokenBalance.contractAddress,
-      AAVE_MIGRATION_CONTRACT,
-      // Maximum amount of tokens that can be approved -> 2^256 - 1
-      //BigNumber.from(2).pow(256).sub(1)
-    )
-    // Wait until transaction is confirmed, then update "allowance" status
-    await tx.wait()
-    refreshDebtAllowances()
-  }
+  const onHandleRevoke = useCallback(
+    async (debtTokenBalance: WrapperTokenType) => {
+      if (!wallet) return
+      const tx = await revokeCreditDelegation(
+        wallet,
+        debtTokenBalance.contractAddress,
+        AAVE_MIGRATION_CONTRACT,
+        //BigNumber.from(2).pow(256).sub(1)
+      )
+      await tx.wait()
+      refreshDebtAllowances()
+    },
+    [refreshDebtAllowances, wallet]
+  )
 
   return (
     <Flex flexDir="column" mt="32px">
@@ -164,9 +167,9 @@ const DebtBalances = ({
                         {debt.allowance?.gt(0) ? 'Approved' : 'Approve'}
                       </Button>
 
-                      <Button onClick={() => onHandleRevoke(debt)}>
+                      {/* <Button onClick={() => onHandleRevoke(debt)}>
                         {'Revoke'}
-                      </Button>
+                      </Button> */}
                     </>
                   )}
                 </GridItem>
@@ -177,7 +180,7 @@ const DebtBalances = ({
         <Grid
           gap={0}
           templateColumns={'100px repeat(2, 1fr)'}
-          gridTemplateRows={'80px repeat(1, 1fr)'}
+          gridTemplateRows={'70px repeat(1, 1fr)'}
           border="1px"
           borderRadius="10px"
           padding="10px"
