@@ -1,17 +1,9 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 import { init, useConnectWallet } from '@web3-onboard/react'
 
 import Balances, { WrapperTokenType } from '../components/Balances'
-import {
-  background,
-  Button,
-  Flex,
-  Heading,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
+import { Flex, Text, Image, VStack } from '@chakra-ui/react'
 import { getWeb3Provider } from '../utils/ethers'
 import {
   getATokenBalances,
@@ -23,8 +15,6 @@ import {
 import { ethers } from 'ethers'
 import StepProgress from '../components/step-progress/stepProgress'
 import Dashboard from '../components/Dashboard'
-import Image from 'next/image'
-import ghost from '../public/omni_mascot.png'
 
 export enum StepEnum {
   CONNECT_WALLET = 1,
@@ -148,7 +138,7 @@ export default function Home() {
                 <Flex ml="2" mt="5">
                   <Image
                     className="relative sizing"
-                    src={ghost}
+                    src={'/omni_mascot.png'}
                     alt="omni mascot"
                   />
                 </Flex>
