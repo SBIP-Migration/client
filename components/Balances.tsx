@@ -37,11 +37,11 @@ const Balances = ({
   onRefreshTokenBalance,
 }: Props) => {
   const [wallet] = useWallets()
-  const [isAddressBalanceUpdated, setIsAddressBalanceUpdated] = useState<
+  const [addressBalanceUpdated, setAddressBalanceUpdated] = useState<
     string | null
   >(null)
 
-  // Set balance to 0
+  // Set allowance to 0
   const onCancelApprove = async (token: WrapperTokenType) => {
     const tx: ContractTransaction = await approveToken(
       wallet,
@@ -51,10 +51,10 @@ const Balances = ({
       BigNumber.from(0)
     )
     // Wait until transaction is confirmed, then update "allowance" status
-    setIsAddressBalanceUpdated(token.contractAddress)
+    setAddressBalanceUpdated(token.contractAddress)
     await tx.wait()
     await onRefreshTokenBalance(token)
-    setIsAddressBalanceUpdated(null)
+    setAddressBalanceUpdated(null)
   }
 
   const onHandleApprove = async (token: WrapperTokenType) => {
@@ -66,10 +66,10 @@ const Balances = ({
       BigNumber.from(2).pow(256).sub(1)
     )
     // Wait until transaction is confirmed, then update "allowance" status
-    setIsAddressBalanceUpdated(token.contractAddress)
+    setAddressBalanceUpdated(token.contractAddress)
     await tx.wait()
     await onRefreshTokenBalance(token)
-    setIsAddressBalanceUpdated(null)
+    setAddressBalanceUpdated(null)
   }
 
   return (
@@ -129,7 +129,8 @@ const Balances = ({
                   {aTokenBalance.symbol}
                 </GridItem>
                 <GridItem colStart={4} colEnd={5} h="12">
-                  {isAddressBalanceUpdated ? (
+                  {addressBalanceUpdated?.toLowerCase() ===
+                  aTokenBalance.contractAddress.toLowerCase() ? (
                     <Spinner size={'md'} />
                   ) : (
                     <Button

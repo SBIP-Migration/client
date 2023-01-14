@@ -14,6 +14,7 @@ import {
   usePrevious,
   Grid,
   GridItem,
+  Spinner,
 } from '@chakra-ui/react'
 import { useConnectWallet } from '@web3-onboard/react'
 import { approveCreditDelegation } from '../utils/ethers'
@@ -21,17 +22,23 @@ import { AAVE_MIGRATION_CONTRACT } from '../constants'
 import { WrapperTokenType } from './Balances'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { BigNumber } from 'ethers'
+import { DebtType } from '../pages'
 
 type Props = {
   stableDebtBalances: WrapperTokenType[]
   variableDebtBalances: WrapperTokenType[]
   refreshDebtAllowances: () => void
+  onRefreshDebtAllowance: (
+    token: WrapperTokenType,
+    debtType: DebtType
+  ) => Promise<void>
   setIsSameWallet: (isSameWallet: boolean) => void
 }
 
 const DebtBalances = ({
   stableDebtBalances,
   variableDebtBalances,
+  onRefreshDebtAllowance,
   refreshDebtAllowances,
   setIsSameWallet,
 }: Props) => {
@@ -39,6 +46,11 @@ const DebtBalances = ({
   const { isOpen, onClose, onOpen } = useDisclosure()
   const [{ wallet }, connect, disconnect] = useConnectWallet()
   const prevWallet = usePrevious(wallet)
+
+  // Handle "loading" state
+  const [addressBalanceUpdated, setAddressBalanceUpdated] = useState<
+    string | null
+  >(null)
 
   const onDisconnectWallet = useCallback(async () => {
     localStorage.setItem('sender', wallet.accounts?.[0]?.address)
@@ -58,7 +70,6 @@ const DebtBalances = ({
   useEffect(() => {
     if (!wallet || !wallet.accounts?.[0]?.address) return
     localStorage.setItem('recipient', wallet?.accounts?.[0]?.address)
-    console.log('stableDebtBalances', stableDebtBalances)
   }, [wallet])
 
   const isOldWallet = useMemo(() => {
@@ -70,7 +81,7 @@ const DebtBalances = ({
   }, [prevWallet, wallet?.accounts])
 
   const onHandleApprove = useCallback(
-    async (debtTokenBalance: WrapperTokenType) => {
+    async (debtTokenBalance: WrapperTokenType, debtType: DebtType) => {
       if (!wallet) return
       const tx = await approveCreditDelegation(
         wallet,
@@ -78,10 +89,40 @@ const DebtBalances = ({
         AAVE_MIGRATION_CONTRACT,
         BigNumber.from(2).pow(256).sub(1)
       )
+      setAddressBalanceUpdated(debtTokenBalance.contractAddress)
       await tx.wait()
-      refreshDebtAllowances()
+      await onRefreshDebtAllowance(debtTokenBalance, debtType)
+      setAddressBalanceUpdated(null)
     },
-    [refreshDebtAllowances, wallet]
+    [onRefreshDebtAllowance, wallet]
+  )
+
+  // Set delegation to 0
+  const onCancelApprove = useCallback(
+    async (debtTokenBalance: WrapperTokenType, debtType: DebtType) => {
+      if (!wallet) return
+      const tx = await approveCreditDelegation(
+        wallet,
+        debtTokenBalance.contractAddress,
+        AAVE_MIGRATION_CONTRACT,
+        BigNumber.from(0)
+      )
+      setAddressBalanceUpdated(debtTokenBalance.contractAddress)
+      await tx.wait()
+      onRefreshDebtAllowance(debtTokenBalance, debtType)
+      setAddressBalanceUpdated(null)
+    },
+    [onRefreshDebtAllowance, wallet]
+  )
+
+  const nonZeroStableDebtBalances = useMemo(
+    () => stableDebtBalances?.filter((debt) => debt?.balance?.gt(0)),
+    [stableDebtBalances]
+  )
+
+  const nonZeroVariableDebtBalances = useMemo(
+    () => variableDebtBalances?.filter((debt) => debt?.balance?.gt(0)),
+    [variableDebtBalances]
   )
 
   return (
@@ -105,6 +146,18 @@ const DebtBalances = ({
         </Button>
       </Center>
       <Flex flexDir="column" justifyContent="center" alignItems="left" ml="30">
+        <Heading
+          fontWeight="bold"
+          backgroundColor="gray.200"
+          width="fit-content"
+          p="1"
+          color="black"
+          borderRadius="4px"
+          mb="2.5"
+          size="md"
+        >
+          Stable Interest Debt
+        </Heading>
         <Grid
           templateColumns={'100px repeat(2, 1fr)'}
           gridTemplateRows={'50px repeat(3, 1fr) 30px'}
@@ -116,14 +169,18 @@ const DebtBalances = ({
           backgroundColor="white"
           opacity="0.9"
         >
-          <GridItem rowSpan={1} colSpan={1} colStart={0} colEnd={1} h="0">
-            <Flex minW="100px">
-              <b>Stable Interest Debt</b>
-            </Flex>
-          </GridItem>
-          {stableDebtBalances
-            ?.filter((debt) => debt?.balance?.gt(0))
-            .map((debt) => (
+          {nonZeroStableDebtBalances.length == 0 ? (
+            <GridItem
+              rowSpan={2}
+              colSpan={4}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              No stable debt positions
+            </GridItem>
+          ) : (
+            nonZeroStableDebtBalances?.map((debt) => (
               <>
                 <GridItem
                   key={debt.symbol}
@@ -137,22 +194,47 @@ const DebtBalances = ({
                     <b>{debt.symbol} :</b>
                   </Text>
                 </GridItem>
-                <GridItem colStart={2} colEnd={3} h="12">
-                  {parseFloat(debt.balanceInTokenDecimals).toFixed(5)}
+                <GridItem colStart={2} colEnd={4} h="12">
+                  <Text textAlign="center">
+                    {parseFloat(debt.balanceInTokenDecimals).toFixed(5)}{' '}
+                    {debt.symbol}
+                  </Text>
                 </GridItem>
-                <GridItem colStart={3} colEnd={5} h="12">
-                  {!isOldWallet && (
-                    <Button
-                      isDisabled={debt.allowance?.gt(0)}
-                      onClick={() => onHandleApprove(debt)}
-                    >
-                      {debt.allowance?.gt(0) ? 'Approved' : 'Approve'}
-                    </Button>
+                <GridItem colStart={4} colEnd={5} h="12">
+                  {addressBalanceUpdated?.toLowerCase() ===
+                  debt.contractAddress.toLowerCase() ? (
+                    <Flex justifyContent="center" mr="24px">
+                      <Spinner size="md" alignSelf="center" />
+                    </Flex>
+                  ) : (
+                    !isOldWallet && (
+                      <Button
+                        isDisabled={debt.allowance?.gte(debt.balance)}
+                        onClick={() => onHandleApprove(debt, DebtType.STABLE)}
+                      >
+                        {debt.allowance?.gte(debt.balance)
+                          ? 'Approved'
+                          : 'Approve'}
+                      </Button>
+                    )
                   )}
                 </GridItem>
               </>
-            ))}
+            ))
+          )}
         </Grid>
+        <Heading
+          fontWeight="bold"
+          backgroundColor="gray.200"
+          width="fit-content"
+          p="1"
+          color="black"
+          borderRadius="4px"
+          mb="2.5"
+          size="md"
+        >
+          Variable Interest Debt
+        </Heading>
         <Grid
           gap={0}
           templateColumns={'100px repeat(2, 1fr)'}
@@ -163,15 +245,18 @@ const DebtBalances = ({
           backgroundColor="white"
           opacity="0.9"
         >
-          <GridItem rowSpan={1} colSpan={1} colStart={0} colEnd={1} h="0">
-            <Flex minW="100px">
-              <b>Variable Interest Debt</b>
-            </Flex>
-          </GridItem>
-          {/* <Flex border="1px" borderRadius="10px" padding="10px"> */}
-          {variableDebtBalances
-            ?.filter((debt) => debt?.balance?.gt(0))
-            ?.map((debt) => (
+          {nonZeroVariableDebtBalances.length === 0 ? (
+            <GridItem
+              rowSpan={2}
+              colSpan={4}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              No variable debt positions
+            </GridItem>
+          ) : (
+            nonZeroVariableDebtBalances?.map((debt) => (
               <>
                 <GridItem
                   key={debt.symbol}
@@ -185,24 +270,41 @@ const DebtBalances = ({
                     <b>{debt.symbol} :</b>
                   </Text>
                 </GridItem>
-                <GridItem colStart={2} colEnd={3} h="12">
-                  {parseFloat(debt.balanceInTokenDecimals).toFixed(5)}
+                <GridItem colStart={2} colEnd={4} h="12">
+                  <Text textAlign="center">
+                    {parseFloat(debt.balanceInTokenDecimals).toFixed(5)}{' '}
+                    {debt.symbol}
+                  </Text>
                 </GridItem>
-                <GridItem colStart={3} colEnd={5} h="12">
-                  {!isOldWallet && (
-                    <Button
-                      isDisabled={debt.allowance?.gte(debt.balance)}
-                      onClick={() => onHandleApprove(debt)}
-                    >
-                      {debt.allowance?.gte(debt.balance)
-                        ? 'Approved'
-                        : 'Approve'}
-                    </Button>
+                <GridItem colStart={4} colEnd={5} h="12">
+                  {addressBalanceUpdated?.toLowerCase() ===
+                  debt.contractAddress.toLowerCase() ? (
+                    <Flex justifyContent="center" mr="24px">
+                      <Spinner size="md" alignSelf="center" />
+                    </Flex>
+                  ) : (
+                    !isOldWallet && (
+                      <Button
+                        isDisabled={debt.allowance?.gte(debt.balance)}
+                        onClick={() => onHandleApprove(debt, DebtType.VARIABLE)}
+                      >
+                        {debt.allowance?.gte(debt.balance)
+                          ? 'Approved'
+                          : 'Approve'}
+                      </Button>
+                    )
                   )}
                 </GridItem>
+                {/* <GridItem colStart={4} colEnd={5} h="12">
+                  <Button
+                    onClick={() => onCancelApprove(debt, DebtType.VARIABLE)}
+                  >
+                    Cancel Approve
+                  </Button>
+                </GridItem> */}
               </>
-            ))}
-          {/* </Flex> */}
+            ))
+          )}
         </Grid>
       </Flex>
       <Modal

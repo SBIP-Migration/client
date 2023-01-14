@@ -130,6 +130,27 @@ const getTokenAllowance = async (
   return contractTokenAllowance
 }
 
+const getDebtTokenAllowance = async (
+  provider: ethers.providers.Provider,
+  userAddress: string,
+  tokenAddress: string
+) => {
+  const tokenContract = new ethers.Contract(
+    tokenAddress,
+    [
+      ...erc20ABI,
+      'function borrowAllowance(address fromUser, address toUser) external view returns (uint256)',
+    ],
+    provider
+  )
+  const contractTokenAllowance = (await tokenContract.borrowAllowance(
+    userAddress,
+    AAVE_MIGRATION_CONTRACT
+  )) as BigNumber
+
+  return contractTokenAllowance
+}
+
 const getATokenBalances = async (
   provider: ethers.providers.Provider,
   userAddress: string
@@ -225,6 +246,7 @@ const updateVariableDebtAllowances = async (
 export {
   getTokenBalance,
   getTokenAllowance,
+  getDebtTokenAllowance,
   getATokenBalances,
   getStableDebtBalances,
   getVariableDebtBalances,

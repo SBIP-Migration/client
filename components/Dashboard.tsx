@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react'
-import { StepEnum } from '../pages'
+import { DebtType, StepEnum } from '../pages'
 import Balances, { WrapperTokenType } from './Balances'
 import DebtBalances from './Debtbalances'
 import ConnectWallet from './ConnectWallet'
@@ -11,6 +11,10 @@ type Props = {
   nextStep: () => void
   refreshTokenBalances: () => Promise<void>
   onRefreshTokenBalance: (token: WrapperTokenType) => Promise<void>
+  onRefreshDebtAllowance: (
+    token: WrapperTokenType,
+    debtType: DebtType
+  ) => Promise<void>
   aTokenBalances: WrapperTokenType[]
   stableDebtBalances: WrapperTokenType[]
   variableDebtBalances: WrapperTokenType[]
@@ -22,6 +26,7 @@ const Dashboard = ({
   nextStep,
   refreshTokenBalances,
   onRefreshTokenBalance,
+  onRefreshDebtAllowance,
   aTokenBalances,
   stableDebtBalances,
   variableDebtBalances,
@@ -66,6 +71,7 @@ const Dashboard = ({
           <DebtBalances
             stableDebtBalances={stableDebtBalances}
             variableDebtBalances={variableDebtBalances}
+            onRefreshDebtAllowance={onRefreshDebtAllowance}
             setIsSameWallet={setIsSameWallet}
             refreshDebtAllowances={refreshDebtAllowances}
           />
