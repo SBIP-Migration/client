@@ -1,13 +1,16 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import Head from 'next/head'
-import { init, useConnectWallet } from '@web3-onboard/react'
+import { useConnectWallet } from '@web3-onboard/react'
 
-import Balances, { WrapperTokenType } from '../components/Balances'
+import { WrapperTokenType } from '../components/Balances'
 import { Flex, Text, Image, VStack } from '@chakra-ui/react'
 import { getWeb3Provider } from '../utils/ethers'
 import {
   getATokenBalances,
+  getDebtTokenAllowance,
   getStableDebtBalances,
+  getTokenAllowance,
+  getTokenBalance,
   getVariableDebtBalances,
   updateStableDebtAllowances,
   updateVariableDebtAllowances,
@@ -23,6 +26,14 @@ export enum StepEnum {
   TRANSFER_TOKENS = 4,
   COMPLETE = 5,
 }
+
+export enum DebtType {
+  STABLE = 'stable',
+  VARIABLE = 'variable',
+}
+
+// Refresh only 1 token balance at a time
+// Update refresh callback function
 
 export default function Home() {
   const [{ wallet }] = useConnectWallet()
@@ -57,6 +68,10 @@ export default function Home() {
 
       if (aTokenBalancesPromise.status === 'fulfilled') {
         setATokenBalances(aTokenBalancesPromise.value)
+        console.log(
+          'aTokenBalancesPromise.value',
+          aTokenBalancesPromise.value.map((t) => t.balance.toString())
+        )
       }
 
       if (stableDebtBalancesPromise.status === 'fulfilled') {
@@ -74,6 +89,88 @@ export default function Home() {
     await getAllBalances(walletSigner)
   }
 
+  const onRefreshTokenAllowance = useCallback(
+    async (token: WrapperTokenType) => {
+      const tokenIdx = aTokenBalances.findIndex(
+        (t) => t.contractAddress === token.contractAddress
+      )
+
+      if (tokenIdx == -1) return
+
+      const prevTokenBalance = aTokenBalances[tokenIdx]
+
+      const newTokenAllowance = await getTokenAllowance(
+        provider,
+        walletSigner,
+        token.contractAddress
+      )
+
+      if (newTokenAllowance) {
+        setATokenBalances((prev) => [
+          ...prev.slice(0, tokenIdx),
+          {
+            ...prevTokenBalance,
+            allowance: newTokenAllowance,
+          },
+          ...prev.slice(tokenIdx + 1),
+        ])
+      }
+    },
+    [aTokenBalances, provider, walletSigner]
+  )
+
+  const onRefreshDebtAllowance = useCallback(
+    async (token: WrapperTokenType, debtType: DebtType) => {
+      let tokenIdx = -1
+
+      if (debtType === DebtType.STABLE) {
+        tokenIdx = stableDebtBalances.findIndex(
+          (t) => t.contractAddress === token.contractAddress
+        )
+      } else {
+        tokenIdx = variableDebtBalances.findIndex(
+          (t) => t.contractAddress === token.contractAddress
+        )
+      }
+
+      if (tokenIdx == -1) return
+
+      const prevDebtBalance =
+        debtType === DebtType.STABLE
+          ? stableDebtBalances[tokenIdx]
+          : variableDebtBalances[tokenIdx]
+
+      const newDebtAllowance = await getDebtTokenAllowance(
+        provider,
+        walletSigner,
+        token.contractAddress
+      )
+
+      if (newDebtAllowance) {
+        if (debtType === DebtType.STABLE) {
+          setStableDebtBalances((prev) => [
+            ...prev.slice(0, tokenIdx),
+            {
+              ...prevDebtBalance,
+              allowance: newDebtAllowance,
+            },
+            ...prev.slice(tokenIdx + 1),
+          ])
+        } else {
+          setVariableDebtBalances((prev) => [
+            ...prev.slice(0, tokenIdx),
+            {
+              ...prevDebtBalance,
+              allowance: newDebtAllowance,
+            },
+            ...prev.slice(tokenIdx + 1),
+          ])
+        }
+      }
+    },
+    [provider, stableDebtBalances, variableDebtBalances, walletSigner]
+  )
+
   const refreshDebtAllowances = async () => {
     const newStableDebtBalances = await updateStableDebtAllowances(
       provider,
@@ -85,7 +182,6 @@ export default function Home() {
       walletSigner,
       variableDebtBalances
     )
-    console.log('newVariableDebtBalances', newVariableDebtBalances)
 
     setStableDebtBalances(newStableDebtBalances)
     setVariableDebtBalances(newVariableDebtBalances)
@@ -143,8 +239,11 @@ export default function Home() {
                   />
                 </Flex>
               </Flex>
-              <h1 className="pixel_font" style={{ fontSize: 40 }}>
-                Transfer all tokens & positions in one click
+              <h1
+                className="pixel_font"
+                style={{ fontSize: 40, textAlign: 'center' }}
+              >
+                Transfer all Aave related tokens & positions
               </h1>
               <VStack height="100%" pt="5">
                 {walletSigner && (
@@ -161,6 +260,8 @@ export default function Home() {
                     currentStep,
                     nextStep: () => updateCurrentStep(currentStep + 1),
                     refreshTokenBalances: onRefreshTokenBalances,
+                    onRefreshTokenBalance: onRefreshTokenAllowance,
+                    onRefreshDebtAllowance,
                     aTokenBalances,
                     stableDebtBalances,
                     variableDebtBalances,

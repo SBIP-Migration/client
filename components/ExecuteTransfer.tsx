@@ -5,6 +5,7 @@ import {
   Center,
   Flex,
   Heading,
+  Link,
   Modal,
   ModalBody,
   ModalContent,
@@ -17,7 +18,9 @@ import {
 import { useConnectWallet } from '@web3-onboard/react'
 import { DebtTokenPosition, executeMigration } from '../utils/ethers'
 import { WrapperTokenType } from './Balances'
-import { BigNumber } from 'ethers'
+import { BigNumber, ContractReceipt, ContractTransaction } from 'ethers'
+import { getBlockExplorerBaseUrl } from '../utils/chain'
+import { goerli } from 'wagmi'
 
 type Props = {
   variableDebtBalances: WrapperTokenType[]
@@ -32,7 +35,7 @@ const ExecuteTransfer = ({
 }: Props) => {
   const { isOpen, onClose, onOpen } = useDisclosure()
   const [{ wallet }, connect, disconnect] = useConnectWallet()
-  const [executed, setExecuted] = React.useState<boolean>(false)
+  const [txHash, setTxHash] = React.useState<string>()
 
   useEffect(() => {
     // Switch wallet on original "sender"
@@ -78,15 +81,15 @@ const ExecuteTransfer = ({
       aTokenAddress: aToken.contractAddress,
     }))
 
-    const tx = await executeMigration(
+    const tx: ContractTransaction = await executeMigration(
       wallet,
       recipient,
       debtTokenBalances,
       aTokenPositions
     )
 
-    await tx.wait()
-    setExecuted(true)
+    const txReceipt: ContractReceipt = await tx.wait()
+    setTxHash(txReceipt.transactionHash)
   }, [aTokenBalances, stableDebtBalances, variableDebtBalances, wallet])
 
   return (
@@ -101,16 +104,34 @@ const ExecuteTransfer = ({
           <Heading as="h2" size="lg" mb={4}>
             Execute Transfer
           </Heading>
-          {executed && (
-            <Text mb={4}>
+          {txHash && (
+            <Text
+              mb={6}
+              backgroundColor="white"
+              p="1.5"
+              maxW="550px"
+              borderRadius="8px"
+              textAlign="center"
+              fontWeight="semibold"
+            >
               You have successfully transferred your assets to the new wallet.
+              <br />
+              Check out the{' '}
+              <Link
+                href={`${getBlockExplorerBaseUrl(goerli)}/tx/${txHash}`}
+                color="blue"
+                target="_blank"
+              >
+                transaction here
+              </Link>
             </Text>
           )}
           <Button
-            colorScheme="blue"
-            variant="outline"
             onClick={onButtonClick}
             alignSelf="center"
+            backgroundColor="red"
+            textColor="white"
+            disabled={txHash !== undefined}
           >
             Migrate positions to Aave
           </Button>
