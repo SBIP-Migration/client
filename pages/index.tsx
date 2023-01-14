@@ -223,7 +223,8 @@ export default function Home() {
                 name="description"
                 content="Migrate your Aave positions to another wallet"
               />
-              <link rel="icon" href="/favicon.ico" />
+              {/* <link rel="icon" href="/favicon.ico" /> */}
+              <link rel="icon" href="/omni_mascot.png" />
             </Head>
 
             <Flex flexDir="column" alignItems="center" height="100%" mt="72px">
