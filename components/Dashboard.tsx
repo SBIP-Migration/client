@@ -10,6 +10,7 @@ type Props = {
   currentStep: StepEnum
   nextStep: () => void
   refreshTokenBalances: () => Promise<void>
+  onRefreshTokenBalance: (token: WrapperTokenType) => Promise<void>
   aTokenBalances: WrapperTokenType[]
   stableDebtBalances: WrapperTokenType[]
   variableDebtBalances: WrapperTokenType[]
@@ -20,6 +21,7 @@ const Dashboard = ({
   currentStep,
   nextStep,
   refreshTokenBalances,
+  onRefreshTokenBalance,
   aTokenBalances,
   stableDebtBalances,
   variableDebtBalances,
@@ -46,7 +48,6 @@ const Dashboard = ({
       return numUndelegatedStableDebt > 0 || numUndelegatedVariableDebt > 0
     }
 
-    // TODO: Add logic for debt positions
     return false
   }, [aTokenBalances, currentStep, stableDebtBalances, variableDebtBalances])
 
@@ -58,6 +59,7 @@ const Dashboard = ({
           <Balances
             refreshTokenBalances={refreshTokenBalances}
             aTokenBalances={aTokenBalances}
+            onRefreshTokenBalance={onRefreshTokenBalance}
           />
         ),
         [StepEnum.APPROVE_DEBT_POSITIONS]: (
@@ -85,9 +87,9 @@ const Dashboard = ({
             textColor="white"
             onClick={nextStep}
             mt="5"
-            height='10'
+            height="10"
             disabled={!isButtonEnabled}
-            className='nextbuttonposition'
+            className="nextbuttonposition"
           >
             Next
           </Button>

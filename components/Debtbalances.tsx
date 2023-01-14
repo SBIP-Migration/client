@@ -117,7 +117,7 @@ const DebtBalances = ({
           opacity="0.9"
         >
           <GridItem rowSpan={1} colSpan={1} colStart={0} colEnd={1} h="0">
-            <Flex w="100px">
+            <Flex minW="100px">
               <b>Stable Interest Debt</b>
             </Flex>
           </GridItem>
@@ -153,7 +153,6 @@ const DebtBalances = ({
               </>
             ))}
         </Grid>
-
         <Grid
           gap={0}
           templateColumns={'100px repeat(2, 1fr)'}
@@ -165,7 +164,7 @@ const DebtBalances = ({
           opacity="0.9"
         >
           <GridItem rowSpan={1} colSpan={1} colStart={0} colEnd={1} h="0">
-            <Flex w="100px">
+            <Flex minW="100px">
               <b>Variable Interest Debt</b>
             </Flex>
           </GridItem>

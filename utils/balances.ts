@@ -103,6 +103,33 @@ const getVariableDebtBalances = async (
   return variableDebtBalancesList
 }
 
+const getTokenBalance = async (
+  provider: ethers.providers.Provider,
+  userAddress: string,
+  tokenAddress: string
+) => {
+  const tokenContract = new ethers.Contract(tokenAddress, erc20ABI, provider)
+  const userTokenBalance = (await tokenContract.balanceOf(
+    userAddress
+  )) as BigNumber
+
+  return userTokenBalance
+}
+
+const getTokenAllowance = async (
+  provider: ethers.providers.Provider,
+  userAddress: string,
+  tokenAddress: string
+) => {
+  const tokenContract = new ethers.Contract(tokenAddress, erc20ABI, provider)
+  const contractTokenAllowance = (await tokenContract.allowance(
+    userAddress,
+    AAVE_MIGRATION_CONTRACT
+  )) as BigNumber
+
+  return contractTokenAllowance
+}
+
 const getATokenBalances = async (
   provider: ethers.providers.Provider,
   userAddress: string
@@ -196,6 +223,8 @@ const updateVariableDebtAllowances = async (
 }
 
 export {
+  getTokenBalance,
+  getTokenAllowance,
   getATokenBalances,
   getStableDebtBalances,
   getVariableDebtBalances,
