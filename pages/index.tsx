@@ -10,7 +10,6 @@ import {
   getDebtTokenAllowance,
   getStableDebtBalances,
   getTokenAllowance,
-  getTokenBalance,
   getVariableDebtBalances,
   updateStableDebtAllowances,
   updateVariableDebtAllowances,
@@ -18,6 +17,7 @@ import {
 import { ethers } from 'ethers'
 import StepProgress from '../components/step-progress/stepProgress'
 import Dashboard from '../components/Dashboard'
+import ConnectedWallets from '../components/ConnectedWallets'
 
 export enum StepEnum {
   CONNECT_WALLET = 1,
@@ -41,6 +41,8 @@ export default function Home() {
     StepEnum.CONNECT_WALLET
   )
   const hasWalletBeenConnectedBeforeRef = useRef<boolean>()
+  const [senderWallet, setSenderWallet] = useState<string>()
+  const [receiverWallet, setReceiverWallet] = useState<string>()
 
   const walletSigner = wallet?.accounts?.[0].address
 
@@ -194,17 +196,25 @@ export default function Home() {
 
   useEffect(() => {
     ;(async () => {
+      if (walletSigner?.length == 0 || provider == null) {
+        return
+      }
+
       if (
-        walletSigner?.length &&
-        provider != null &&
         // Don't fetch all balances for recipient wallet
         hasWalletBeenConnectedBeforeRef.current === undefined
       ) {
         await getAllBalances(walletSigner)
         hasWalletBeenConnectedBeforeRef.current = true
+        setSenderWallet(walletSigner)
       }
     })()
-  }, [walletSigner, getAllBalances, provider])
+
+    const receiverWallet = localStorage.getItem('recipient')
+    if (receiverWallet) {
+      setReceiverWallet(receiverWallet)
+    }
+  }, [walletSigner, getAllBalances, provider, senderWallet])
 
   useEffect(() => {
     return () => {
@@ -247,9 +257,12 @@ export default function Home() {
                 Transfer all Aave related tokens & positions
               </h1>
               <VStack height="100%" pt="5">
-                {walletSigner && (
-                  <Text size="md">Address connected: {walletSigner} </Text>
-                )}
+                <ConnectedWallets
+                  {...{
+                    senderWallet,
+                    receiverWallet,
+                  }}
+                />
                 <StepProgress
                   {...{
                     currentStep,

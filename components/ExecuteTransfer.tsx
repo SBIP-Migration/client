@@ -126,6 +126,18 @@ const ExecuteTransfer = ({
               </Link>
             </Text>
           )}
+          <Box
+            maxW="350px"
+            backgroundColor="gray.200"
+            p="1.5"
+            borderRadius="6px"
+            mb="24px"
+          >
+            <Text textAlign="center" fontWeight="bold">
+              Make sure that the &quot;Sender wallet&quot; & &quot;Recipient
+              wallet&quot; above are different and correct before proceeding
+            </Text>
+          </Box>
           <Button
             onClick={onButtonClick}
             alignSelf="center"
@@ -149,8 +161,13 @@ const ExecuteTransfer = ({
           <ModalBody>
             <Text textAlign="center">
               {wallet
-                ? 'Disconnect current (recipient) wallet (may need to do it manually too with your wallet provider)'
-                : 'Connect your previous (sender) wallet (make sure you have disconnected manually if you are on Metamask)'}
+                ? 'Disconnect / Switch current (recipient) wallet'
+                : 'Connect your previous (sender) wallet'}
+            </Text>
+            <Text textAlign="center" fontWeight="semibold">
+              {wallet
+                ? '(may need to do it manually with your wallet provider - METAMASK)'.toUpperCase()
+                : '(may need to switch manually with your wallet provider - METAMASK)'.toUpperCase()}
             </Text>
           </ModalBody>
           <ModalFooter>

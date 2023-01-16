@@ -319,8 +319,13 @@ const DebtBalances = ({
           <ModalBody>
             <Text textAlign="center">
               {wallet
-                ? 'Disconnect current wallet (may need to do it manually too with your wallet provider)'
-                : 'Connect your new wallet (make sure you have disconnected manually if you are on Metamask)'}
+                ? 'Disconnect / Switch current wallet'
+                : 'Connect your new wallet'}
+            </Text>
+            <Text textAlign="center" fontWeight="semibold">
+              {wallet
+                ? '(may need to do it manually with your wallet provider)'.toUpperCase()
+                : '(may need to switch manually with your wallet provider)'.toUpperCase()}
             </Text>
           </ModalBody>
           <ModalFooter>
