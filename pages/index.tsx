@@ -228,7 +228,7 @@ export default function Home() {
         <div className="bgStart">
           <Flex flexDir="column" height="100vh">
             <Head>
-              <title>OmniTransfer</title>
+              <title>AaveTransfer</title>
               <meta
                 name="description"
                 content="Migrate your Aave positions to another wallet"
@@ -240,7 +240,7 @@ export default function Home() {
             <Flex flexDir="column" alignItems="center" height="100%" mt="72px">
               <Flex>
                 <h1 className="pixel_font" style={{ fontSize: 70 }}>
-                  OmniTransfer
+                  AaveTransfer
                 </h1>
                 <Flex ml="2" mt="5">
                   <Image
