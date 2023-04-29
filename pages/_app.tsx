@@ -11,10 +11,10 @@ init({
   wallets: [injected],
   chains: [
     {
-      id: '0x5',
+      id: '0xaa36a7',
       token: 'ETH',
-      label: 'Goerli Testnet',
-      rpcUrl: process.env.NEXT_PUBLIC_GOERLI_URL,//'https://eth-goerli.g.alchemy.com/v2/kcOzPHZIPQLSrltPylFU110LX1FTwQ_N', //process.env.NEXT_PUBLIC_GOERLI_URL,
+      label: 'SEPOLIA Testnet',
+      rpcUrl: process.env.NEXT_PUBLIC_SEPOLIA_URL,//'https://eth-goerli.g.alchemy.com/v2/kcOzPHZIPQLSrltPylFU110LX1FTwQ_N', //process.env.NEXT_PUBLIC_GOERLI_URL,
     },
   ],
 })
